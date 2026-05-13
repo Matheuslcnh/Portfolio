@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senha Segura - Teste a Força da Sua Senha</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header com Tabs -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🔐 Senha Segura</h1>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="teste">Teste de Senha</button>
+                <button class="tab-btn" data-tab="ranking">🏆 Ranking Ao Vivo</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo das Tabs -->
+    <main class="main">
+        <!-- Tab Teste de Senha -->
+        <section id="teste" class="tab-content active">
+            <!-- Formulário de Informações Pessoais -->
+            <section id="personalInfoSection" class="form-section active">
+                <div class="container">
+                    <div class="form-card">
+                        <div class="step-indicator">
+                            <div class="step active">1</div>
+                            <div class="step">2</div>
+                        </div>
+                        <h2>👤 Suas Informações</h2>
+                        <p class="subtitle">Vamos simular um ataque REALISTA (hacker já sabe algumas infos suas)</p>
+                        
+                        <form id="personalForm">
+                            <div class="input-group">
+                                <label>Nome Completo *</label>
+                                <input type="text" id="nome" required>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Telefone (para ranking) *</label>
+                                <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary">
+                                <span>Próximo</span> <span class="arrow">→</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Formulário de Senha -->
+            <section id="passwordSection" class="form-section">
+                <div class="container">
+                    <div class="form-card">
+                        <div class="step-indicator">
+                            <div class="step active">1</div>
+                            <div class="step active">2</div>
+                        </div>
+                        <h2>🔑 Digite Sua Senha</h2>
+                        <p class="subtitle">Só uma vez por dia! Resultado vai pro ranking 🔥</p>
+                        
+                        <form id="passwordForm">
+                            <div class="password-input-group">
+                                <input type="password" id="senha" placeholder="Sua senha real..." required maxlength="50">
+                                <button type="button" id="showPassword" class="show-password">👁️</button>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary">
+                                <span>🔍 Verificar Senha</span>
+                            </button>
+                        </form>
+
+                        <!-- Resultados -->
+                        <div id="resultados" class="resultados hidden">
+                            <div class="success-message">
+                                ✅ <strong>Parabéns!</strong> Você entrou no ranking!
+                            </div>
+                            
+                            <div class="strength-meter">
+                                <div class="strength-bar">
+                                    <div id="strengthFill" class="strength-fill"></div>
+                                </div>
+                                <span id="strengthText" class="strength-text"></span>
+                            </div>
+                            
+                            <div class="tempo-estimado">
+                                <h3>⏱️ Hacker demora:</h3>
+                                <div id="tempoHacker" class="tempo-display"></div>
+                            </div>
+
+                            <div class="analise-detalhada">
+                                <h3>📊 Por que está assim:</h3>
+                                <div id="analiseLista"></div>
+                            </div>
+
+                            <div class="sugestoes">
+                                <h3>💡 Melhore assim:</h3>
+                                <div id="sugestoesLista"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Tab Ranking -->
+        <section id="ranking" class="tab-content">
+            <div class="container">
+                <div class="ranking-header">
+                    <h2>🏆 Ranking Ao Vivo</h2>
+                    <div class="refresh-btn" id="refreshRanking">
+                        🔄 Atualizar
+                    </div>
+                </div>
+                
+                <div id="rankingList" class="ranking-list">
+                    <div class="ranking-empty">
+                        <div class="empty-icon">👥</div>
+                        <h3>Ainda não há participantes</h3>
+                        <p>Faça o teste e seja o primeiro!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
