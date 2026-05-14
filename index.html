@@ -4,57 +4,196 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senha Segura - Teste a Força da Sua Senha</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; color: #333;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        .header { 
+            background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(10px); 
+            padding: 20px 0; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 28px; font-weight: 700; 
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .tabs { display: flex; gap: 10px; }
+        .tab-btn { 
+            padding: 12px 24px; border: none; background: #f8f9fa; 
+            border-radius: 25px; cursor: pointer; font-weight: 500; 
+            transition: all 0.3s ease; font-size: 14px;
+        }
+        .tab-btn:hover, .tab-btn.active { 
+            background: linear-gradient(45deg, #667eea, #764ba2); 
+            color: white; transform: translateY(-2px);
+        }
+
+        .main { padding: 40px 0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-section { display: none; }
+        .form-section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-card { 
+            background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(20px); padding: 40px; 
+            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .step-indicator { display: flex; gap: 12px; margin-bottom: 30px; }
+        .step { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            background: #f1f5f9; display: flex; align-items: center; 
+            justify-content: center; font-weight: 600; color: #64748b;
+        }
+        .step.active { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+
+        h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; color: #1f2937; }
+        .subtitle { color: #64748b; font-size: 16px; margin-bottom: 30px; font-weight: 500; }
+
+        .input-group { margin-bottom: 24px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #374151; }
+        input { 
+            width: 100%; padding: 16px 20px; border: 2px solid #e5e7eb; 
+            border-radius: 12px; font-size: 16px; transition: all 0.3s; 
+            font-family: inherit;
+        }
+        input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        input:disabled { background: #f3f4f6; cursor: not-allowed; }
+
+        .password-input-group { position: relative; margin-bottom: 24px; }
+        .show-password { 
+            position: absolute; right: 16px; top: 50%; 
+            transform: translateY(-50%); background: none; border: none; 
+            font-size: 20px; cursor: pointer; color: #6b7280;
+        }
+
+        .btn-primary { 
+            width: 100%; padding: 18px; background: linear-gradient(45deg, #667eea, #764ba2); 
+            color: white; border: none; border-radius: 12px; font-size: 16px; 
+            font-weight: 600; cursor: pointer; transition: all 0.3s; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .resultados.hidden { display: none; }
+        .success-message { 
+            background: linear-gradient(45deg, #10b981, #059669); color: white; 
+            padding: 20px; border-radius: 16px; text-align: center; 
+            font-size: 18px; font-weight: 600; margin-bottom: 30px;
+        }
+        .strength-meter { margin-bottom: 30px; }
+        .strength-bar { 
+            width: 100%; height: 12px; background: #e5e7eb; 
+            border-radius: 6px; overflow: hidden; margin-bottom: 12px;
+        }
+        .strength-fill { height: 100%; transition: all 1s ease; border-radius: 6px; }
+        .strength-text { font-size: 24px; font-weight: 700; display: block; text-align: center; }
+
+        .tempo-estimado { 
+            background: #f8fafc; padding: 24px; border-radius: 16px; 
+            text-align: center; margin-bottom: 30px;
+        }
+        .tempo-estimado h3 { color: #374151; margin-bottom: 12px; font-size: 18px; }
+        .tempo-display { font-size: 32px; font-weight: 700; color: #1e40af; }
+
+        .analise-detalhada h3, .sugestoes h3 { 
+            color: #374151; margin-bottom: 16px; font-size: 20px; font-weight: 600;
+        }
+        .analise-item, .sugestao-item { 
+            padding: 12px 16px; margin-bottom: 8px; border-radius: 12px; font-size: 15px;
+        }
+        .analise-item.sucesso { background: #d1fae5; color: #059669; border-left: 4px solid #10b981; }
+        .analise-item.erro { background: #fee2e2; color: #dc2626; border-left: 4px solid #ef4444; }
+        .sugestao-item { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
+
+        .ranking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .refresh-btn { 
+            padding: 10px 20px; background: rgba(255,255,255,0.3); 
+            border: 2px solid rgba(255,255,255,0.5); border-radius: 25px; 
+            cursor: pointer; font-weight: 500; transition: all 0.3s; 
+        }
+        .refresh-btn:hover { background: rgba(255,255,255,0.5); transform: translateY(-1px); }
+
+        .ranking-list { 
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); 
+            border-radius: 24px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .ranking-empty { text-align: center; padding: 60px 20px; color: #64748b; }
+        .empty-icon { font-size: 64px; margin-bottom: 20px; display: block; }
+
+        .ranking-item { 
+            display: flex; align-items: center; gap: 20px; padding: 20px; 
+            background: #f8fafc; border-radius: 16px; margin-bottom: 12px; 
+            transition: all 0.3s;
+        }
+        .ranking-item:hover { transform: translateX(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .ranking-pos { font-size: 24px; font-weight: 700; color: #6366f1; min-width: 50px; }
+        .ranking-nome { flex: 1; font-weight: 500; color: #374151; }
+        .ranking-forca { 
+            padding: 8px 16px; border-radius: 20px; font-weight: 600; 
+            font-size: 14px; min-width: 80px; text-align: center;
+        }
+        .ranking-forca.fraca { background: #fee2e2; color: #dc2626; }
+        .ranking-forca.media { background: #fef3c7; color: #d97706; }
+        .ranking-forca.forte { background: #d1fae5; color: #059669; }
+        .ranking-tempo { color: #6b7280; font-weight: 500; }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header .container { flex-direction: column; gap: 20px; }
+            .ranking-item { flex-direction: column; text-align: center; gap: 12px; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header com Tabs -->
     <header class="header">
         <div class="container">
             <h1 class="logo">🔐 Senha Segura</h1>
             <div class="tabs">
                 <button class="tab-btn active" data-tab="teste">Teste de Senha</button>
-                <button class="tab-btn" data-tab="ranking">🏆 Ranking Ao Vivo</button>
+                <button class="tab-btn" data-tab="ranking">🏆 Ranking</button>
             </div>
         </div>
     </header>
 
-    <!-- Conteúdo das Tabs -->
     <main class="main">
-        <!-- Tab Teste de Senha -->
         <section id="teste" class="tab-content active">
-            <!-- Formulário de Informações Pessoais -->
-            <section id="personalInfoSection" class="form-section active">
+            <section id="formPessoal" class="form-section active">
                 <div class="container">
                     <div class="form-card">
                         <div class="step-indicator">
                             <div class="step active">1</div>
                             <div class="step">2</div>
                         </div>
-                        <h2>👤 Suas Informações</h2>
-                        <p class="subtitle">Vamos simular um ataque REALISTA (hacker já sabe algumas infos suas)</p>
-                        
-                        <form id="personalForm">
+                        <h2>👤 Informações Pessoais</h2>
+                        <p class="subtitle">Simulação realista de ataque</p>
+                        <form id="formPessoalSubmit">
                             <div class="input-group">
                                 <label>Nome Completo *</label>
-                                <input type="text" id="nome" required>
+                                <input type="text" id="nomeInput" required>
                             </div>
-                            
                             <div class="input-group">
-                                <label>Telefone (para ranking) *</label>
-                                <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+                                <label>Telefone *</label>
+                                <input type="tel" id="telInput" placeholder="(11) 99999-9999" required>
                             </div>
-                            
-                            <button type="submit" class="btn-primary">
-                                <span>Próximo</span> <span class="arrow">→</span>
-                            </button>
+                            <button type="submit" class="btn-primary">Próximo →</button>
                         </form>
                     </div>
                 </div>
             </section>
 
-            <!-- Formulário de Senha -->
-            <section id="passwordSection" class="form-section">
+            <section id="formSenha" class="form-section">
                 <div class="container">
                     <div class="form-card">
                         <div class="step-indicator">
@@ -62,45 +201,33 @@
                             <div class="step active">2</div>
                         </div>
                         <h2>🔑 Digite Sua Senha</h2>
-                        <p class="subtitle">Só uma vez por dia! Resultado vai pro ranking 🔥</p>
+                        <p class="subtitle" id="senhaSubtitle">Só 1x por dia! Vai pro ranking 🔥</p>
                         
-                        <form id="passwordForm">
+                        <form id="formSenhaSubmit">
                             <div class="password-input-group">
-                                <input type="password" id="senha" placeholder="Sua senha real..." required maxlength="50">
-                                <button type="button" id="showPassword" class="show-password">👁️</button>
+                                <input type="password" id="senhaInput" placeholder="Sua senha real..." required maxlength="50">
+                                <button type="button" class="show-password" id="mostrarSenha">👁️</button>
                             </div>
-                            
-                            <button type="submit" class="btn-primary">
-                                <span>🔍 Verificar Senha</span>
-                            </button>
+                            <button type="submit" class="btn-primary" id="btnTestar">🔍 Testar Senha</button>
                         </form>
 
-                        <!-- Resultados -->
-                        <div id="resultados" class="resultados hidden">
-                            <div class="success-message">
-                                ✅ <strong>Parabéns!</strong> Você entrou no ranking!
-                            </div>
-                            
+                        <div id="resultadosDiv" class="resultados hidden">
+                            <div class="success-message">✅ Entrou no Ranking!</div>
                             <div class="strength-meter">
-                                <div class="strength-bar">
-                                    <div id="strengthFill" class="strength-fill"></div>
-                                </div>
-                                <span id="strengthText" class="strength-text"></span>
+                                <div class="strength-bar"><div id="barraForca" class="strength-fill"></div></div>
+                                <span id="textoForca" class="strength-text">Calculando...</span>
                             </div>
-                            
                             <div class="tempo-estimado">
                                 <h3>⏱️ Hacker demora:</h3>
                                 <div id="tempoHacker" class="tempo-display"></div>
                             </div>
-
                             <div class="analise-detalhada">
-                                <h3>📊 Por que está assim:</h3>
-                                <div id="analiseLista"></div>
+                                <h3>📊 Análise:</h3>
+                                <div id="listaAnalise"></div>
                             </div>
-
                             <div class="sugestoes">
-                                <h3>💡 Melhore assim:</h3>
-                                <div id="sugestoesLista"></div>
+                                <h3>💡 Sugestões:</h3>
+                                <div id="listaSugestoes"></div>
                             </div>
                         </div>
                     </div>
@@ -108,30 +235,321 @@
             </section>
         </section>
 
-        <!-- Tab Ranking -->
         <section id="ranking" class="tab-content">
             <div class="container">
                 <div class="ranking-header">
                     <h2>🏆 Ranking Ao Vivo</h2>
-                    <div class="refresh-btn" id="refreshRanking">
-                        🔄 Atualizar
-                    </div>
+                    <button class="refresh-btn" id="btnAtualizar">🔄 Atualizar</button>
                 </div>
-                
-                <div id="rankingList" class="ranking-list">
+                <div id="listaRanking" class="ranking-list">
                     <div class="ranking-empty">
                         <div class="empty-icon">👥</div>
-                        <h3>Ainda não há participantes</h3>
-                        <p>Faça o teste e seja o primeiro!</p>
+                        <h3>Sem participantes</h3>
+                        <p>Faça o teste primeiro!</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // SUAS CREDENCIAIS EXATAS
+        const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let usuarioJaTestou = false;
+        let dadosPessoais = {};
+
+        // SUAS FUNÇÕES EXATAS ✅
+        async function verificarUsuarioExistente(telefone) {
+            const { data, error } = await supabaseClient
+                .from('ranking')
+                .select('telefone')
+                .eq('telefone', telefone)
+                .single();
+            return data ? true : false;
+        }
+
+        async function salvarNoRanking(nome, telefone, forca, tempo) {
+            try {
+                const { error } = await supabaseClient
+                    .from('ranking')
+                    .upsert({
+                        nome: nome,
+                        telefone: telefone,
+                        forca: forca,
+                        tempo_estimado: tempo,
+                        timestamp: new Date().toISOString()
+                    }, { onConflict: 'telefone' });
+                if (error) throw error;
+                console.log('✅ Salvo:', nome, forca, tempo);
+                return true;
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                return false;
+            }
+        }
+
+        async function carregarRanking() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('ranking')
+                    .select('*')
+                    .order('forca', { ascending: false })
+                    .order('timestamp', { ascending: false })
+                    .limit(20);
+                if (error) throw error;
+                return data || [];
+            } catch (error) {
+                console.error('Erro ranking:', error);
+                return [];
+            }
+        }
+
+        // APLICAÇÃO PRINCIPAL ✅
+        class App {
+            constructor() {
+                this.init();
+            }
+
+            async init() {
+                this.tabs();
+                this.forms();
+                this.senhaToggle();
+                await this.verificarExistente();
+                this.atualizarRanking();
+                console.log('🚀 App iniciada!');
+            }
+
+            tabs() {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        e.target.classList.add('active');
+                        document.getElementById(e.target.dataset.tab).classList.add('active');
+                    };
+                });
+                document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
+            }
+
+            async verificarExistente() {
+                const tel = localStorage.getItem('telefone');
+                if (tel) {
+                    usuarioJaTestou = await verificarUsuarioExistente(tel);
+                    if (usuarioJaTestou) {
+                        document.getElementById('senhaSubtitle').innerHTML = 
+                            'Você já testou hoje! <strong>Veja no ranking ➡️</strong>';
+                        document.getElementById('senhaInput').disabled = true;
+                        document.getElementById('btnTestar').disabled = true;
+                        document.getElementById('btnTestar').innerHTML = 'Já testou hoje! 👈';
+                    }
+                }
+            }
+
+            forms() {
+                document.getElementById('formPessoalSubmit').onsubmit = async (e) => {
+                    e.preventDefault();
+                    dadosPessoais.nome = document.getElementById('nomeInput').value.trim();
+                    dadosPessoais.telefone = document.getElementById('telInput').value.trim();
+                    
+                    if (!dadosPessoais.nome || !dadosPessoais.telefone) {
+                        alert('❌ Preencha todos os campos!');
+                        return;
+                    }
+
+                    localStorage.setItem('telefone', dadosPessoais.telefone);
+                    document.getElementById('formPessoal').classList.remove('active');
+                    document.getElementById('formSenha').classList.add('active');
+                };
+
+                document.getElementById('formSenhaSubmit').onsubmit = async (e) => {
+                    e.preventDefault();
+                    if (usuarioJaTestou) {
+                        alert('Você já testou hoje!');
+                        return;
+                    }
+                    await this.testarSenha();
+                };
+            }
+
+            senhaToggle() {
+                document.getElementById('mostrarSenha').onclick = () => {
+                    const input = document.getElementById('senhaInput');
+                    const btn = document.getElementById('mostrarSenha');
+                    input.type = input.type === 'password' ? 'text' : 'password';
+                    btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+                };
+            }
+
+            async testarSenha() {
+                const senha = document.getElementById('senhaInput').value;
+                if (!senha) {
+                    alert('Digite a senha!');
+                    return;
+                }
+
+                const analise = this.analisar(senha);
+                const tempo = this.tempoCrack(analise);
+                const forca = this.calcularForca(analise);
+
+                console.log('🔍 Análise:', analise);
+                console.log('💪 Força:', forca, '/100');
+                console.log('⏱️ Tempo:', tempo);
+
+                const salvo = await salvarNoRanking(
+                    dadosPessoais.nome, 
+                    dadosPessoais.telefone, 
+                    forca,
+                    tempo
+                );
+
+                if (salvo) {
+                    usuarioJaTestou = true;
+                    document.getElementById('senhaInput').disabled = true;
+                    document.getElementById('btnTestar').disabled = true;
+                    this.mostrarResultados(analise, forca, tempo);
+                    this.atualizarRanking();
+                } else {
+                    alert('Erro ao salvar. Tente novamente.');
+                }
+            }
+
+            analisar(senha) {
+                return {
+                    len: senha.length,
+                    upper: /[A-Z]/.test(senha),
+                    lower: /[a-z]/.test(senha),
+                    num: /\d/.test(senha),
+                    sym: /[^a-zA-Z0-9]/.test(senha),
+                    comum: /123456|password|senha|qwerty|abc123|admin|123123/i.test(senha),
+                    pessoal: dadosPessoais.nome && 
+                        senha.toLowerCase().includes(dadosPessoais.nome.toLowerCase().replace(/\s/g,'').slice(0,5))
+                };
+            }
+
+            // ✅ TEMPO CORRIGIDO - NUNCA MAIS 0!
+            tempoCrack(analise) {
+    let charset = 26;
+    if (analise.upper) charset += 26;
+    if (analise.num) charset += 10;
+    if (analise.sym) charset += 32;
+
+    let segundos = Math.pow(charset, analise.len) / 1e11;
+
+    if (analise.comum) segundos *= 0.05;
+    if (analise.pessoal) segundos *= 0.01;
+
+    segundos = Math.max(1, segundos);
+
+    let texto;
+    if (segundos < 60) texto = `${Math.round(segundos)}s`;
+    else if (segundos < 3600) texto = `${Math.round(segundos/60)}min`;
+    else if (segundos < 86400) texto = `${Math.round(segundos/3600)}h`;
+    else if (segundos < 31536000) texto = `${Math.round(segundos/86400)}dias`;
+    else texto = `${Math.round(segundos/31536000)}anos`;
+
+    return {
+        valor: segundos,  // 🔥 tempo real de verdade
+        texto: texto      // 👀 o que o usuário vê
+    };
+}
+
+            calcularForca(analise) {
+                let score = Math.min(analise.len * 4, 25);
+                if (analise.upper) score += 12;
+                if (analise.lower) score += 8;
+                if (analise.num) score += 15;
+                if (analise.sym) score += 18;
+                if (analise.comum) score -= 30;
+                if (analise.pessoal) score -= 40;
+                return Math.max(0, Math.min(100, score));
+            }
+
+            mostrarResultados(analise, forca, tempo) {
+                // Barra de força
+                const barra = document.getElementById('barraForca');
+                const texto = document.getElementById('textoForca');
+                const cor = forca < 40 ? '#ef4444' : forca < 70 ? '#f59e0b' : '#10b981';
+                
+                barra.style.width = forca + '%';
+                barra.style.background = cor;
+                texto.textContent = forca < 40 ? '🚨 FRACA' : forca < 70 ? '⚠️ MÉDIA' : '🛡️ FORTE';
+                texto.style.color = cor;
+
+                // Tempo
+                document.getElementById('tempoHacker').textContent = tempo;
+
+                // Análise detalhada
+                const lista = document.getElementById('listaAnalise');
+                lista.innerHTML = `
+                    <div class="analise-item ${analise.len>=12?'sucesso':'erro'}">
+                        ${analise.len>=12?'✅':'❌'} Comprimento: ${analise.len} 
+                        ${analise.len<12?'(use 12+)':''}
+                    </div>
+                    <div class="analise-item ${analise.upper?'sucesso':'erro'}">
+                        ${analise.upper?'✅':'❌'} Maiúsculas (A-Z)
+                    </div>
+                    <div class="analise-item ${analise.num?'sucesso':'erro'}">
+                        ${analise.num?'✅':'❌'} Números (0-9)
+                    </div>
+                    <div class="analise-item ${analise.sym?'sucesso':'erro'}">
+                        ${analise.sym?'✅':'❌'} Símbolos (!@#$)
+                    </div>
+                    ${analise.comum?`<div class="analise-item erro">🚨 Palavra comum detectada</div>`:''}
+                    ${analise.pessoal?`<div class="analise-item erro">🚨 Dados pessoais na senha</div>`:''}
+                `;
+
+                // Sugestões
+                const sugestoes = document.getElementById('listaSugestoes');
+                const tips = [];
+                if (analise.len < 12) tips.push('• Use 12+ caracteres');
+                if (!analise.upper) tips.push('• Adicione MAIÚSCULAS');
+                if (!analise.num) tips.push('• Inclua NÚMEROS');
+                if (!analise.sym) tips.push('• Use SÍMBOLOS (!@#$%)');
+                if (analise.comum) tips.push('• Evite "123456", "password"');
+                if (analise.pessoal) tips.push('• Nunca use nome/telefone');
+
+                sugestoes.innerHTML = tips.length ? 
+                    tips.map(t => `<div class="sugestao-item">${t}</div>`).join('') :
+                    '<div class="sugestao-item sucesso">🎉 Senha excelente!</div>';
+
+                document.getElementById('resultadosDiv').classList.remove('hidden');
+                document.getElementById('resultadosDiv').scrollIntoView({behavior: 'smooth'});
+            }
+
+            async atualizarRanking() {
+                const dados = await carregarRanking();
+                const lista = document.getElementById('listaRanking');
+                
+                if (!dados.length) {
+                    lista.innerHTML = `
+                        <div class="ranking-empty">
+                            <div class="empty-icon">👥</div>
+                            <h3>Nenhum participante</h3>
+                            <p>Faça o teste e seja o #1!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                lista.innerHTML = dados.map((item, i) => {
+                    const classe = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
+                    return `
+                        <div class="ranking-item">
+                            <div class="ranking-pos">${i+1}º</div>
+                            <div class="ranking-nome">${item.nome}</div>
+                            <div class="ranking-forca ${classe}">${item.forca}</div>
+                            <div class="ranking-tempo">${item.tempo_estimado}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new App());
+    </script>
 </body>
 </html>

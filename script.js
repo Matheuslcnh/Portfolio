@@ -11,6 +11,7 @@ class SenhaSegura {
         this.initForms();
         this.initPasswordToggle();
         await this.verificarUsuarioExistente();
+        this.carregarRankingVisual(); // Carrega ranking inicial
     }
 
     initTabs() {
@@ -18,15 +19,16 @@ class SenhaSegura {
             btn.addEventListener('click', (e) => {
                 const tab = e.target.dataset.tab;
                 
-                // Ativar tab
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('personalInfoSection').classList.remove('active');
+                document.getElementById('passwordSection').classList.remove('active');
+                
                 e.target.classList.add('active');
                 document.getElementById(tab).classList.add('active');
             });
         });
 
-        // Refresh ranking
         document.getElementById('refreshRanking').addEventListener('click', () => {
             this.carregarRankingVisual();
         });
@@ -37,10 +39,14 @@ class SenhaSegura {
         if (telefone) {
             const existe = await verificarUsuarioExistente(telefone);
             if (existe) {
-                usuarioJaTestou = true;
-                document.querySelector('.subtitle').innerHTML = 
-                    'Você já testou hoje! <strong>Resultado no ranking ➡️</strong>';
+                // Marca como já testou e desabilita senha
+                window.usuarioJaTestou = true;
+                const subtitle = document.querySelector('#passwordSection .subtitle');
+                if (subtitle) {
+                    subtitle.innerHTML = 'Você já testou hoje! <strong>Resultado no ranking ➡️</strong>';
+                }
                 document.getElementById('senha').disabled = true;
+                document.querySelector('#passwordForm button[type="submit"]').disabled = true;
             }
         }
     }
@@ -53,7 +59,7 @@ class SenhaSegura {
 
         document.getElementById('passwordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (usuarioJaTestou) {
+            if (window.usuarioJaTestou) {
                 alert('Você já testou hoje! Veja seu resultado no ranking.');
                 return;
             }
@@ -67,11 +73,19 @@ class SenhaSegura {
             telefone: document.getElementById('telefone').value.trim()
         };
 
+        // Validação básica
+        if (!this.personalData.nome || !this.personalData.telefone) {
+            alert('Preencha todos os campos!');
+            return;
+        }
+
         localStorage.setItem('telefone', this.personalData.telefone);
         
-        // Trocar seção
+        // Trocar seção com animação
         document.getElementById('personalInfoSection').classList.remove('active');
-        document.getElementById('passwordSection').classList.add('active');
+        setTimeout(() => {
+            document.getElementById('passwordSection').classList.add('active');
+        }, 300);
     }
 
     initPasswordToggle() {
@@ -86,16 +100,21 @@ class SenhaSegura {
 
     async analisarSenha() {
         const senha = document.getElementById('senha').value;
+        if (!senha) {
+            alert('Digite sua senha!');
+            return;
+        }
+
         const resultados = document.getElementById('resultados');
         
-        // Análise
+        // Análise completa
         const analise = this.analisarCaracteristicas(senha);
         const tempoBase = this.calcularTempoBase(senha);
         const tempoEngenhariaSocial = this.aplicarEngenhariaSocial(senha, tempoBase);
         this.forcaFinal = this.calcularForca(analise, tempoEngenhariaSocial);
         this.tempoAnalise = tempoEngenhariaSocial;
         
-        // Salvar no ranking
+        // Salvar no Supabase
         const salvo = await salvarNoRanking(
             this.personalData.nome, 
             this.personalData.telefone, 
@@ -104,18 +123,16 @@ class SenhaSegura {
         );
 
         if (salvo) {
-            usuarioJaTestou = true;
+            window.usuarioJaTestou = true;
             this.carregarRankingVisual(); // Atualiza ranking automaticamente
         }
 
         this.mostrarResultados(analise, tempoEngenhariaSocial);
         resultados.classList.remove('hidden');
         
-        // Scroll suave
+        // Scroll suave para resultados
         resultados.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // ... (métodos de análise permanecem iguais do script anterior)
 
     analisarCaracteristicas(senha) {
         const analise = {
@@ -132,7 +149,7 @@ class SenhaSegura {
     }
 
     verificarPalavrasComuns(senha) {
-        const comuns = ['123456', 'password', '123123', 'qwerty', 'abc123', 'admin'];
+        const comuns = ['123456', 'password', '123123', 'qwerty', 'abc123', 'admin', 'senha'];
         return comuns.some(palavra => senha.toLowerCase().includes(palavra));
     }
 
@@ -159,7 +176,7 @@ class SenhaSegura {
         let tempo = tempoBase;
         if (this.verificarInfoPessoal(senha)) tempo *= 0.01;
         if (this.verificarPalavrasComuns(senha)) tempo *= 0.1;
-        return Math.max(1, tempo); // Mínimo 1 segundo
+        return Math.max(1, tempo);
     }
 
     calcularForca(analise, tempo) {
@@ -196,7 +213,6 @@ class SenhaSegura {
         strengthText.textContent = forca < 40 ? '🚨 FRACA' : forca < 70 ? '⚠️ MÉDIA' : '🛡️ FORTE';
 
         document.getElementById('tempoHacker').textContent = tempoFormatado;
-
         this.mostrarAnalise(analise);
         this.mostrarSugestoes(analise, forca);
     }
@@ -245,37 +261,99 @@ class SenhaSegura {
 
     async carregarRankingVisual() {
         const lista = document.getElementById('rankingList');
-        const dados = await carregarRanking();
+        try {
+            const dados = await carregarRanking();
 
-        if (dados.length === 0) {
-            lista.innerHTML = `
-                <div class="ranking-empty">
-                    <div class="empty-icon">👥</div>
-                    <h3>Nenhum teste ainda</h3>
-                    <p>Faça o teste e seja o #1!</p>
-                </div>
-            `;
-            return;
+            if (dados.length === 0) {
+                lista.innerHTML = `
+                    <div class="ranking-empty">
+                        <div class="empty-icon">👥</div>
+                        <h3>Ainda não há participantes</h3>
+                        <p>Faça o teste e seja o primeiro!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            lista.innerHTML = '';
+            dados.slice(0, 20).forEach((item, index) => {
+                const forcaClass = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
+                const div = document.createElement('div');
+                div.className = 'ranking-item';
+                div.innerHTML = `
+                    <div class="ranking-pos">${index + 1}º</div>
+                    <div class="ranking-nome">${item.nome}</div>
+                    <div class="ranking-forca ${forcaClass}">${item.forca}/100</div>
+                    <div class="ranking-tempo">${item.tempo_estimado}</div>
+                `;
+                lista.appendChild(div);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar ranking:', error);
+            lista.innerHTML = '<div class="ranking-empty"><p>Erro ao carregar ranking</p></div>';
         }
-
-        lista.innerHTML = '';
-        dados.slice(0, 20).forEach((item, index) => {
-            const forcaClass = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
-            const div = document.createElement('div');
-            div.className = 'ranking-item';
-            div.innerHTML = `
-                <div class="ranking-pos">${index + 1}º</div>
-                <div class="ranking-nome">${item.nome}</div>
-                <div class="ranking-forca ${forcaClass}">${item.forca}/100</div>
-                <div class="ranking-tempo">${item.tempo_estimado}</div>
-            `;
-            lista.appendChild(div);
-        });
     }
 }
 
+// SUPABASE FUNCTIONS
+const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
+
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.usuarioJaTestou = false;
+
+async function verificarUsuarioExistente(telefone) {
+    const { data, error } = await supabaseClient
+        .from('ranking')
+        .select('telefone')
+        .eq('telefone', telefone)
+        .single();
+    
+    return data ? true : false;
+}
+
+async function salvarNoRanking(nome, telefone, forca, tempo) {
+    try {
+        const { error } = await supabaseClient
+            .from('ranking')
+            .upsert({
+                nome: nome,
+                telefone: telefone,
+                forca: forca,
+                tempo_estimado: tempo,
+                timestamp: new Date().toISOString()
+            }, { onConflict: 'telefone' });
+        
+        if (error) throw error;
+        console.log('✅ Salvo no ranking!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao salvar:', error);
+        alert('Erro ao salvar no ranking. Tente novamente.');
+        return false;
+    }
+}
+
+async function carregarRanking() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('ranking')
+            .select('*')
+            .order('forca', { ascending: false })
+            .order('timestamp', { ascending: false })
+            .limit(50);
+        
+        if (error) throw error;
+        return data || [];
+    }  catch (error) {
+        console.error('Erro ao carregar ranking:', error);
+        throw error;
+    }
+}
+
+// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     new SenhaSegura();
-    // Carrega ranking inicial
-    setTimeout(() => document.querySelector('[data-tab="ranking"]').click(), 100);
 });
