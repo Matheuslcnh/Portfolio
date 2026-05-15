@@ -4,13 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Labstar • Senha Segura</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root{
       --blue-900:#0b1b3a;
       --blue-800:#0f2a5a;
@@ -27,7 +25,6 @@
       --red-500:#ef4444;
       --green-500:#10b981;
       --yellow-500:#f59e0b;
-      --shadow: 0 20px 60px rgba(0,0,0,0.12);
     }
 
     body {
@@ -37,7 +34,7 @@
       color: #333;
     }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 20px; }
 
     .header {
       background: rgba(255,255,255,0.95);
@@ -45,9 +42,6 @@
       padding: 20px 0;
       box-shadow: 0 8px 32px rgba(0,0,0,0.08);
       border-bottom: 1px solid rgba(37,99,235,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 30;
     }
 
     .header .container {
@@ -109,7 +103,7 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .form-section { display: none; }
-    .form-section.active { display: block; animation: fadeIn 0.4s ease; }
+    .form-section.active { display: block; animation: fadeIn 0.5s; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -121,7 +115,7 @@
       backdrop-filter: blur(20px);
       padding: 40px;
       border-radius: 24px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
       border: 1px solid rgba(37,99,235,0.08);
     }
 
@@ -162,12 +156,14 @@
     }
 
     .input-group { margin-bottom: 24px; }
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 700;
       color: #334155;
     }
+
     input {
       width: 100%;
       padding: 16px 20px;
@@ -177,11 +173,13 @@
       transition: all 0.2s;
       font-family: inherit;
     }
+
     input:focus {
       outline: none;
       border-color: var(--blue-600);
       box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
     }
+
     input:disabled {
       background: #f3f4f6;
       cursor: not-allowed;
@@ -195,6 +193,7 @@
     }
 
     .password-input-group { position: relative; margin-bottom: 12px; }
+
     .show-password {
       position: absolute;
       right: 16px;
@@ -241,6 +240,7 @@
     }
 
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
     .resultados.hidden { display: none; }
 
     .success-message {
@@ -268,6 +268,7 @@
     }
 
     .strength-meter { margin-bottom: 30px; }
+
     .strength-bar {
       width: 100%;
       height: 12px;
@@ -276,12 +277,14 @@
       overflow: hidden;
       margin-bottom: 12px;
     }
+
     .strength-fill {
       height: 100%;
       transition: all 1s ease;
       border-radius: 6px;
       width: 0%;
     }
+
     .strength-text {
       font-size: 24px;
       font-weight: 900;
@@ -297,11 +300,13 @@
       margin-bottom: 30px;
       border: 1px solid rgba(37,99,235,0.08);
     }
+
     .tempo-estimado h3 {
       color: #334155;
       margin-bottom: 12px;
       font-size: 18px;
     }
+
     .tempo-display {
       font-size: 32px;
       font-weight: 900;
@@ -314,74 +319,26 @@
       font-size: 20px;
       font-weight: 800;
     }
+
     .analise-item, .sugestao-item {
       padding: 12px 16px;
       margin-bottom: 8px;
       border-radius: 12px;
       font-size: 15px;
     }
+
     .analise-item.sucesso { background: #d1fae5; color: #059669; border-left: 4px solid #10b981; }
     .analise-item.erro { background: #fee2e2; color: #dc2626; border-left: 4px solid #ef4444; }
     .sugestao-item { background: #dbeafe; color: #1d4ed8; border-left: 4px solid #2563eb; }
 
-    .admin-login{ max-width: 520px; margin-bottom: 24px; }
-    .admin-toolbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+    .ranking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
     }
-
-    .ranking-list {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(37,99,235,0.08);
-    }
-
-    .admin-table{
-      width:100%;
-      min-width: 980px;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    .admin-table thead th{
-      background: linear-gradient(45deg, var(--blue-700), var(--blue-500));
-      color: white;
-      text-align: left;
-      padding: 14px 12px;
-      font-weight: 800;
-      border-bottom: 2px solid rgba(255,255,255,0.12);
-    }
-    .admin-table tbody td{
-      background: white;
-      padding: 14px 12px;
-      border-bottom: 1px solid rgba(37,99,235,0.08);
-      vertical-align: top;
-      color: #334155;
-      font-weight: 600;
-    }
-    .admin-table tbody tr:hover td{ background: #f8fbff; }
-    .admin-empty-cell{
-      text-align:center;
-      color:#64748b;
-      font-weight:700;
-      padding:24px !important;
-    }
-    .admin-badge{
-      display:inline-block;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-    }
-    .admin-badge.fraca{ background:#fee2e2; color:#dc2626; }
-    .admin-badge.media{ background:#fef3c7; color:#d97706; }
-    .admin-badge.forte{ background:#d1fae5; color:#059669; }
 
     .refresh-btn {
       padding: 10px 20px;
@@ -393,9 +350,203 @@
       transition: all 0.2s;
       color: var(--blue-700);
     }
+
     .refresh-btn:hover { background: rgba(37,99,235,0.18); transform: translateY(-1px); }
 
-    /* Modal */
+    .ranking-list {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      border: 1px solid rgba(37,99,235,0.08);
+    }
+
+    .ranking-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .ranking-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      transition: all 0.25s;
+      border: 1px solid rgba(37,99,235,0.06);
+    }
+
+    .ranking-item:hover {
+      transform: translateX(6px);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+    }
+
+    .ranking-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ranking-pos {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--blue-700);
+      min-width: 74px;
+    }
+
+    .ranking-nome {
+      flex: 1;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .ranking-nome-btn{
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      color: var(--blue-700);
+      text-decoration: underline;
+      text-decoration-color: rgba(37,99,235,.35);
+      text-underline-offset: 4px;
+    }
+
+    .ranking-nome-btn:hover{
+      color: var(--blue-600);
+      text-decoration-color: rgba(37,99,235,.75);
+    }
+
+    .ranking-badges{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    .pill{
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pill-phone{ background: rgba(37,99,235,0.10); color: var(--blue-700); }
+    .pill-tempo{ background: rgba(15,23,42,0.05); color: #334155; }
+    .pill-score{ background: rgba(16,185,129,0.10); color: #047857; }
+
+    .ranking-meta{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ranking-card-mini{
+      background: white;
+      border: 1px solid rgba(37,99,235,0.08);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .ranking-card-mini h4{
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--blue-700);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .ranking-card-mini p{
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.45;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .ranking-item:nth-child(1) { box-shadow: 0 12px 30px rgba(37,99,235,0.18); }
+    .ranking-item:nth-child(2) { box-shadow: 0 10px 24px rgba(37,99,235,0.14); }
+    .ranking-item:nth-child(3) { box-shadow: 0 8px 18px rgba(37,99,235,0.10); }
+
+    .admin-login{
+      max-width: 520px;
+      margin-bottom: 24px;
+    }
+
+    .admin-toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .admin-table{
+      width:100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .admin-table thead th{
+      background: linear-gradient(45deg, var(--blue-700), var(--blue-500));
+      color: white;
+      text-align: left;
+      padding: 14px 12px;
+      font-weight: 800;
+      border-bottom: 2px solid rgba(255,255,255,0.12);
+    }
+
+    .admin-table tbody td{
+      background: white;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(37,99,235,0.08);
+      vertical-align: top;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .admin-table tbody tr:hover td{
+      background: #f8fbff;
+    }
+
+    .admin-empty-cell{
+      text-align:center;
+      color:#64748b;
+      font-weight:700;
+      padding:24px !important;
+    }
+
+    .admin-badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .admin-badge.fraca{ background:#fee2e2; color:#dc2626; }
+    .admin-badge.media{ background:#fef3c7; color:#d97706; }
+    .admin-badge.forte{ background:#d1fae5; color:#059669; }
+
+    /* Modal genérico */
     .modal-backdrop{
       position: fixed;
       inset: 0;
@@ -406,7 +557,9 @@
       padding: 16px;
       z-index: 9999;
     }
+
     .modal-backdrop.active{ display:flex; }
+
     .modal{
       width: 100%;
       max-width: 560px;
@@ -416,6 +569,7 @@
       box-shadow: 0 25px 80px rgba(0,0,0,0.25);
       border: 1px solid rgba(37,99,235,0.15);
     }
+
     .modal-header{
       display:flex;
       align-items:center;
@@ -423,11 +577,13 @@
       gap: 10px;
       margin-bottom: 10px;
     }
+
     .modal-title{
       font-weight: 900;
       font-size: 18px;
       color: #0f172a;
     }
+
     .modal-close{
       border: none;
       background: rgba(37,99,235,0.10);
@@ -437,6 +593,7 @@
       padding: 8px 12px;
       cursor:pointer;
     }
+
     .modal-body{
       background: var(--gray-50);
       border: 1px solid rgba(37,99,235,0.12);
@@ -444,6 +601,7 @@
       padding: 14px;
       margin: 12px 0 16px;
     }
+
     .modal-phone{
       font-size: 22px;
       font-weight: 900;
@@ -451,17 +609,20 @@
       letter-spacing: .5px;
       margin-top: 10px;
     }
+
     .modal-text{
       font-size: 14px;
       line-height: 1.55;
       color: #334155;
       font-weight: 600;
     }
+
     .modal-actions{
       display:flex;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .btn-secondary{
       flex: 1;
       min-width: 140px;
@@ -473,7 +634,11 @@
       padding: 12px 14px;
       cursor:pointer;
     }
-    .btn-secondary:hover{ background: rgba(37,99,235,0.14); }
+
+    .btn-secondary:hover{
+      background: rgba(37,99,235,0.14);
+    }
+
     .btn-danger{
       border-color: rgba(239,68,68,0.25);
       background: rgba(239,68,68,0.08);
@@ -483,7 +648,10 @@
     @media (max-width: 768px) {
       .container { padding: 10px; }
       .header .container { flex-direction: column; align-items: flex-start; }
+      .ranking-top { flex-direction: column; align-items: flex-start; }
+      .ranking-meta { grid-template-columns: 1fr; }
     }
+
     @media (max-width: 480px){
       .logo-img{ height: 28px; }
     }
@@ -499,6 +667,7 @@
 
       <div class="tabs">
         <button class="tab-btn active" data-tab="teste">Teste de Senha</button>
+        <button class="tab-btn" data-tab="ranking">🏆 Ranking</button>
         <button class="tab-btn" data-tab="admin">🔒 Admin</button>
       </div>
     </div>
@@ -571,7 +740,10 @@
 
             <div id="resultadosDiv" class="resultados hidden">
               <div class="success-message">✅ Obrigado pela participação!</div>
-              <div class="gift-message">🎁 Você está participando do sorteio de um brinde da <strong>Labstar</strong>.</div>
+
+              <div class="gift-message">
+                🎁 Você está participando do sorteio de um brinde da <strong>Labstar</strong>.
+              </div>
 
               <div class="strength-meter">
                 <div class="strength-bar">
@@ -600,11 +772,28 @@
       </section>
     </section>
 
+    <section id="ranking" class="tab-content">
+      <div class="container">
+        <div class="ranking-header">
+          <h2>🏆 Ranking Ao Vivo</h2>
+          <button class="refresh-btn" id="btnAtualizar">🔄 Atualizar</button>
+        </div>
+
+        <div id="listaRanking" class="ranking-list">
+          <div class="ranking-empty">
+            <div class="empty-icon">👥</div>
+            <h3>Sem participantes</h3>
+            <p>Faça o teste primeiro!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="admin" class="tab-content">
       <div class="container">
         <div class="form-card">
           <h2>🔒 Painel Admin</h2>
-          <p class="subtitle">Acesso restrito da Labstar • O ranking completo fica somente aqui.</p>
+          <p class="subtitle">Acesso restrito da Labstar</p>
 
           <form id="adminLoginForm" class="admin-login">
             <div class="input-group">
@@ -622,7 +811,7 @@
 
           <div id="adminPanel" style="display:none; margin-top:30px;">
             <div class="admin-toolbar">
-              <h3 style="font-size:22px; font-weight:800; color:#0f172a;">📋 Colocações por tempo de quebra</h3>
+              <h3 style="font-size:22px; font-weight:800; color:#0f172a;">📋 Tabela de Colocações (Admin)</h3>
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button id="btnAtualizarAdmin" class="refresh-btn">🔄 Atualizar</button>
                 <button id="adminLogoutBtn" class="refresh-btn">Sair</button>
@@ -657,6 +846,7 @@
     </section>
   </main>
 
+  <!-- Modal genérico -->
   <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-header">
@@ -684,6 +874,7 @@
     let dadosPessoais = {};
     let usuarioJaTestou = false;
 
+    // ========= Helpers =========
     function formatNumeroPtBR(n) {
       return new Intl.NumberFormat('pt-BR').format(n);
     }
@@ -754,6 +945,7 @@
       localStorage.setItem(getDeviceLockKey(), 'true');
     }
 
+    // ========= Modal =========
     function showModal({ title = 'Aviso', body = '', phone = '', buttons = [] }) {
       const backdrop = document.getElementById('modalBackdrop');
       const titleEl = document.getElementById('modalTitle');
@@ -796,12 +988,14 @@
       backdrop.setAttribute('aria-hidden', 'true');
     }
 
+    // ========= Supabase =========
     async function verificarUsuarioExistente(telefone) {
       const { data } = await supabaseClient
         .from('ranking')
         .select('telefone')
         .eq('telefone', telefone)
         .maybeSingle();
+
       return !!data;
     }
 
@@ -815,24 +1009,43 @@
         console.error('Erro ao salvar:', error);
         return { ok: false, motivo: 'erro' };
       }
+
       return { ok: true };
     }
 
+    async function carregarRankingPublico() {
+    const { data, error } = await supabaseClient
+        .from('ranking_public')
+        .select('*')
+        .not('tempo_valor', 'is', null)
+        .order('tempo_valor', { ascending: false }) // ✅ maior tempo primeiro
+        .order('timestamp', { ascending: true })
+        .limit(20);
+
+    if (error) {
+        console.error('Erro ao carregar ranking público:', error);
+        return [];
+    }
+
+    return data || [];
+}
+
     async function carregarRankingAdmin() {
-      const { data, error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from('ranking')
         .select('*')
         .not('tempo_valor', 'is', null)
-        .order('tempo_valor', { ascending: false })
-        .order('timestamp', { ascending: true })
+        .order('tempo_valor', { ascending: false }) // ✅ maior tempo primeiro
+        .order('timestamp', { ascending: true })    // ✅ critério de desempate
         .limit(100);
 
-      if (error) {
+    if (error) {
         console.error('Erro ao carregar ranking admin:', error);
         return [];
-      }
-      return data || [];
     }
+
+    return data || [];
+}
 
     async function usuarioEhAdmin() {
       const { data: userData } = await supabaseClient.auth.getUser();
@@ -849,9 +1062,11 @@
         console.error('Erro ao verificar admin:', error);
         return false;
       }
+
       return !!data;
     }
 
+    // ========= App =========
     class App {
       constructor() {
         this.adminLogado = false;
@@ -866,6 +1081,9 @@
 
         if (this._rankingTimer) clearInterval(this._rankingTimer);
         this._rankingTimer = setInterval(() => {
+          if (document.getElementById('ranking').classList.contains('active')) {
+            this.atualizarRanking();
+          }
           if (document.getElementById('admin').classList.contains('active') && this.adminLogado) {
             this.atualizarRankingAdmin();
           }
@@ -877,6 +1095,9 @@
         this.bindModalControls();
         this.adminPanel();
         this.verificarSessaoAdmin();
+        this.atualizarRanking();
+
+        document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
       }
 
       bindModalControls() {
@@ -898,6 +1119,7 @@
             btn.classList.add('active');
             document.getElementById(btn.dataset.tab).classList.add('active');
 
+            if (btn.dataset.tab === 'ranking') this.atualizarRanking();
             if (btn.dataset.tab === 'admin' && this.adminLogado) this.atualizarRankingAdmin();
           };
         });
@@ -990,7 +1212,7 @@
               body: `
                 <p class="modal-text">
                   Já existe uma participação registrada com esse telefone.
-                  Você pode visualizar o painel admin para conferir o ranking completo.
+                  Você pode visualizar o ranking, mas não poderá testar novamente.
                 </p>
               `
             });
@@ -1132,6 +1354,7 @@
         document.getElementById('btnTestar').innerHTML = 'Já testou ✅';
 
         this.mostrarResultados(analise, forca, tempo.texto);
+        this.atualizarRanking();
         if (this.adminLogado) {
           this.atualizarRankingAdmin();
         }
@@ -1229,17 +1452,23 @@
 
       calcularForca(a) {
         let score = 0;
+
         score += Math.min(a.len * 5, 35);
         score += a.tipos * 10;
+
         if (a.len >= 12) score += 15;
+
         if (a.comum) score -= 35;
         if (a.sequencias) score -= 18;
         if (a.repeticoes > 2) score -= a.repeticoes * 3;
+
         if (a.nomeDetectado) score -= 25;
         if (a.petDetectado) score -= 15;
         if (a.telDetectado) score -= 20;
         if (a.pessoal) score -= 20;
+
         score += Math.min(a.entropia / 3, 15);
+
         return Math.max(0, Math.min(100, score));
       }
 
@@ -1250,8 +1479,10 @@
 
         barra.style.width = f + '%';
         barra.style.background = cor;
+
         texto.textContent = f < 40 ? '🚨 FRACA' : f < 70 ? '⚠️ MÉDIA' : '🛡️ FORTE';
         texto.style.color = cor;
+
         document.getElementById('tempoHacker').textContent = tempo;
 
         const analises = [
@@ -1260,6 +1491,7 @@
           { ok: !a.comum, text: a.comum ? 'Senha comum detectada' : 'Sem padrão comum' },
           { ok: !a.pessoal, text: a.pessoal ? 'Informações do formulário detectadas (engenharia social)' : 'Sem dados pessoais detectados' }
         ];
+
         if (a.nomeDetectado) analises.push({ ok: false, text: 'Parte do nome apareceu na senha' });
         if (a.petDetectado) analises.push({ ok: false, text: 'Nome do pet apareceu na senha' });
         if (a.telDetectado) analises.push({ ok: false, text: 'Parte do telefone apareceu na senha' });
@@ -1289,18 +1521,110 @@
         document.getElementById('resultadosDiv').scrollIntoView({ behavior: 'smooth' });
       }
 
-      async atualizarRankingAdmin() {
-        const lista = document.getElementById('listaRankingAdmin');
-        const dados = await carregarRankingAdmin();
+      async atualizarRanking() {
+        const dados = await carregarRankingPublico();
+        const lista = document.getElementById('listaRanking');
 
         if (!dados.length) {
           lista.innerHTML = `
-            <tr>
-              <td colspan="7" class="admin-empty-cell">Nenhum participante encontrado</td>
-            </tr>
+            <div class="ranking-empty">
+              <div class="empty-icon">👥</div>
+              <h3>Sem participantes</h3>
+              <p>Faça o teste primeiro!</p>
+            </div>
           `;
           return;
         }
+
+        lista.innerHTML = dados.map((item, i) => {
+          const medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+          const tempoBonito = normalizarTempoTexto(item.tempo_estimado);
+
+          return `
+            <div class="ranking-item" style="${i < 3 ? 'border:2px solid rgba(37,99,235,0.18); background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);' : ''}">
+              <div class="ranking-top">
+                <div class="ranking-pos">${medalha} ${i+1}º</div>
+
+                <div class="ranking-nome">
+                  <button
+                    class="ranking-nome-btn"
+                    data-nome="${item.nome_publico}"
+                    data-tel="${item.telefone_publico}"
+                    title="Clique para ver o telefone mascarado"
+                  >
+                    ${item.nome_publico}
+                  </button>
+                </div>
+
+                <div class="ranking-badges">
+                  <span class="pill pill-phone">📞 ${item.telefone_publico}</span>
+                  <span class="pill pill-tempo">⏱️ ${tempoBonito}</span>
+                  <span class="pill pill-score">💪 ${item.forca}/100</span>
+                </div>
+              </div>
+
+              <div class="ranking-meta">
+                <div class="ranking-card-mini">
+                  <h4>Análise</h4>
+                  <p>${item.analise_resumo || 'Resumo educacional não disponível.'}</p>
+                </div>
+
+                <div class="ranking-card-mini">
+                  <h4>Sugestão</h4>
+                  <p>${item.sugestoes_resumo || 'Revise boas práticas de senha.'}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        document.querySelectorAll('.ranking-nome-btn').forEach(btn => {
+          btn.onclick = () => {
+            showModal({
+              title: 'Contato do participante',
+              body: `
+                <p class="modal-text">
+                  Para preservar a privacidade, o telefone é exibido de forma mascarada.
+                </p>
+              `,
+              phone: btn.dataset.tel || 'Não disponível'
+            });
+          };
+        });
+      }
+
+      async atualizarRankingAdmin() {
+    const lista = document.getElementById('listaRankingAdmin');
+    const dados = await carregarRankingAdmin();
+
+    if (!dados.length) {
+        lista.innerHTML = `
+            <tr>
+                <td colspan="7" class="admin-empty-cell">Nenhum participante encontrado</td>
+            </tr>
+        `;
+        return;
+    }
+
+    lista.innerHTML = dados.map((item, i) => {
+        const classeForca =
+            item.forca < 40 ? 'fraca' :
+            item.forca < 70 ? 'media' :
+            'forte';
+
+        return `
+            <tr>
+                <td><strong>${i + 1}º</strong></td>
+                <td>${item.nome || '-'}</td>
+                <td>${item.telefone || '-'}</td>
+                <td><span class="admin-badge ${classeForca}">${item.forca || 0}/100</span></td>
+                <td>${item.tempo_estimado || '-'}</td>
+                <td>${item.analise_resumo || '-'}</td>
+                <td>${item.sugestoes_resumo || '-'}</td>
+            </tr>
+        `;
+    }).join('');
+}
 
         lista.innerHTML = dados.map((item, i) => {
           const classeForca = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
@@ -1326,19 +1650,27 @@
 
         form.onsubmit = async (e) => {
           e.preventDefault();
+
           const email = document.getElementById('adminEmail').value.trim();
           const password = document.getElementById('adminPassword').value;
 
           const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
           if (error) {
-            showModal({ title: 'Acesso negado', body: `<p class="modal-text">E-mail ou senha inválidos.</p>` });
+            showModal({
+              title: 'Acesso negado',
+              body: `<p class="modal-text">E-mail ou senha inválidos.</p>`
+            });
             return;
           }
 
           const admin = await usuarioEhAdmin();
           if (!admin) {
             await supabaseClient.auth.signOut();
-            showModal({ title: 'Sem permissão', body: `<p class="modal-text">Seu usuário não está cadastrado como administrador.</p>` });
+            showModal({
+              title: 'Sem permissão',
+              body: `<p class="modal-text">Seu usuário não está cadastrado como administrador.</p>`
+            });
             return;
           }
 
@@ -1349,7 +1681,9 @@
         };
 
         btnAtualizarAdmin.onclick = async () => {
-          if (this.adminLogado) await this.atualizarRankingAdmin();
+          if (this.adminLogado) {
+            await this.atualizarRankingAdmin();
+          }
         };
 
         logoutBtn.onclick = async () => {
