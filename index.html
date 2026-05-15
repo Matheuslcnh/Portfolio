@@ -183,6 +183,12 @@
                                 <label>Nome Completo *</label>
                                 <input type="text" id="nomeInput" required>
                             </div>
+                            
+                            <div class="input-group">
+                                <label>Nome do Pet (opcional)</label>
+                                <input type="text" id="petInput" placeholder="Ex: Rex, Luna">
+                            </div>
+
                             <div class="input-group">
                                 <label>Telefone *</label>
                                 <input type="tel" id="telInput" placeholder="(11) 99999-9999" required>
@@ -254,302 +260,237 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // SUAS CREDENCIAIS EXATAS
-        const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let usuarioJaTestou = false;
-        let dadosPessoais = {};
+let usuarioJaTestou = false;
+let dadosPessoais = {};
 
-        // SUAS FUNÇÕES EXATAS ✅
-        async function verificarUsuarioExistente(telefone) {
-            const { data, error } = await supabaseClient
-                .from('ranking')
-                .select('telefone')
-                .eq('telefone', telefone)
-                .single();
-            return data ? true : false;
-        }
-
-        async function salvarNoRanking(nome, telefone, forca, tempo) {
-            try {
-                const { error } = await supabaseClient
-                    .from('ranking')
-                    .upsert({
-                        nome: nome,
-                        telefone: telefone,
-                        forca: forca,
-                        tempo_estimado: tempo,
-                        timestamp: new Date().toISOString()
-                    }, { onConflict: 'telefone' });
-                if (error) throw error;
-                console.log('✅ Salvo:', nome, forca, tempo);
-                return true;
-            } catch (error) {
-                console.error('Erro ao salvar:', error);
-                return false;
-            }
-        }
-
-        async function carregarRanking() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('ranking')
-                    .select('*')
-                    .order('forca', { ascending: false })
-                    .order('timestamp', { ascending: false })
-                    .limit(20);
-                if (error) throw error;
-                return data || [];
-            } catch (error) {
-                console.error('Erro ranking:', error);
-                return [];
-            }
-        }
-
-        // APLICAÇÃO PRINCIPAL ✅
-        class App {
-            constructor() {
-                this.init();
-            }
-
-            async init() {
-                this.tabs();
-                this.forms();
-                this.senhaToggle();
-                await this.verificarExistente();
-                this.atualizarRanking();
-                console.log('🚀 App iniciada!');
-            }
-
-            tabs() {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.onclick = (e) => {
-                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                        e.target.classList.add('active');
-                        document.getElementById(e.target.dataset.tab).classList.add('active');
-                    };
-                });
-                document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
-            }
-
-            async verificarExistente() {
-                const tel = localStorage.getItem('telefone');
-                if (tel) {
-                    usuarioJaTestou = await verificarUsuarioExistente(tel);
-                    if (usuarioJaTestou) {
-                        document.getElementById('senhaSubtitle').innerHTML = 
-                            'Você já testou hoje! <strong>Veja no ranking ➡️</strong>';
-                        document.getElementById('senhaInput').disabled = true;
-                        document.getElementById('btnTestar').disabled = true;
-                        document.getElementById('btnTestar').innerHTML = 'Já testou hoje! 👈';
-                    }
-                }
-            }
-
-            forms() {
-                document.getElementById('formPessoalSubmit').onsubmit = async (e) => {
-                    e.preventDefault();
-                    dadosPessoais.nome = document.getElementById('nomeInput').value.trim();
-                    dadosPessoais.telefone = document.getElementById('telInput').value.trim();
-                    
-                    if (!dadosPessoais.nome || !dadosPessoais.telefone) {
-                        alert('❌ Preencha todos os campos!');
-                        return;
-                    }
-
-                    localStorage.setItem('telefone', dadosPessoais.telefone);
-                    document.getElementById('formPessoal').classList.remove('active');
-                    document.getElementById('formSenha').classList.add('active');
-                };
-
-                document.getElementById('formSenhaSubmit').onsubmit = async (e) => {
-                    e.preventDefault();
-                    if (usuarioJaTestou) {
-                        alert('Você já testou hoje!');
-                        return;
-                    }
-                    await this.testarSenha();
-                };
-            }
-
-            senhaToggle() {
-                document.getElementById('mostrarSenha').onclick = () => {
-                    const input = document.getElementById('senhaInput');
-                    const btn = document.getElementById('mostrarSenha');
-                    input.type = input.type === 'password' ? 'text' : 'password';
-                    btn.textContent = input.type === 'password' ? '👁️' : '🙈';
-                };
-            }
-
-            async testarSenha() {
-                const senha = document.getElementById('senhaInput').value;
-                if (!senha) {
-                    alert('Digite a senha!');
-                    return;
-                }
-
-                const analise = this.analisar(senha);
-                const tempo = this.tempoCrack(analise);
-                const forca = this.calcularForca(analise);
-
-                console.log('🔍 Análise:', analise);
-                console.log('💪 Força:', forca, '/100');
-                console.log('⏱️ Tempo:', tempo);
-
-                const salvo = await salvarNoRanking(
-                    dadosPessoais.nome, 
-                    dadosPessoais.telefone, 
-                    forca,
-                    tempo
-                );
-
-                if (salvo) {
-                    usuarioJaTestou = true;
-                    document.getElementById('senhaInput').disabled = true;
-                    document.getElementById('btnTestar').disabled = true;
-                    this.mostrarResultados(analise, forca, tempo);
-                    this.atualizarRanking();
-                } else {
-                    alert('Erro ao salvar. Tente novamente.');
-                }
-            }
-
-            analisar(senha) {
-                return {
-                    len: senha.length,
-                    upper: /[A-Z]/.test(senha),
-                    lower: /[a-z]/.test(senha),
-                    num: /\d/.test(senha),
-                    sym: /[^a-zA-Z0-9]/.test(senha),
-                    comum: /123456|password|senha|qwerty|abc123|admin|123123/i.test(senha),
-                    pessoal: dadosPessoais.nome && 
-                        senha.toLowerCase().includes(dadosPessoais.nome.toLowerCase().replace(/\s/g,'').slice(0,5))
-                };
-            }
-
-            // ✅ TEMPO CORRIGIDO - NUNCA MAIS 0!
-            tempoCrack(analise) {
-    let charset = 26;
-    if (analise.upper) charset += 26;
-    if (analise.num) charset += 10;
-    if (analise.sym) charset += 32;
-
-    let segundos = Math.pow(charset, analise.len) / 1e11;
-
-    if (analise.comum) segundos *= 0.05;
-    if (analise.pessoal) segundos *= 0.01;
-
-    segundos = Math.max(1, segundos);
-
-    let texto;
-    if (segundos < 60) texto = `${Math.round(segundos)}s`;
-    else if (segundos < 3600) texto = `${Math.round(segundos/60)}min`;
-    else if (segundos < 86400) texto = `${Math.round(segundos/3600)}h`;
-    else if (segundos < 31536000) texto = `${Math.round(segundos/86400)}dias`;
-    else texto = `${Math.round(segundos/31536000)}anos`;
-
-    return {
-        valor: segundos,  // 🔥 tempo real de verdade
-        texto: texto      // 👀 o que o usuário vê
-    };
+async function salvarNoRanking(nome, telefone, forca, tempoTexto, tempoValor) {
+    await supabaseClient.from('ranking').upsert({
+        nome,
+        telefone,
+        forca,
+        tempo_estimado: tempoTexto,
+        tempo_valor: tempoValor,
+        timestamp: new Date().toISOString()
+    }, { onConflict: 'telefone' });
 }
 
-            calcularForca(analise) {
-                let score = Math.min(analise.len * 4, 25);
-                if (analise.upper) score += 12;
-                if (analise.lower) score += 8;
-                if (analise.num) score += 15;
-                if (analise.sym) score += 18;
-                if (analise.comum) score -= 30;
-                if (analise.pessoal) score -= 40;
-                return Math.max(0, Math.min(100, score));
-            }
+async function carregarRanking() {
+    const { data } = await supabaseClient
+        .from('ranking')
+        .select('*')
+        .not('tempo_valor', 'is', null) // ✅ ESSENCIAL
+        .order('tempo_valor', { ascending: false })
+        .limit(20);
 
-            mostrarResultados(analise, forca, tempo) {
-                // Barra de força
-                const barra = document.getElementById('barraForca');
-                const texto = document.getElementById('textoForca');
-                const cor = forca < 40 ? '#ef4444' : forca < 70 ? '#f59e0b' : '#10b981';
-                
-                barra.style.width = forca + '%';
-                barra.style.background = cor;
-                texto.textContent = forca < 40 ? '🚨 FRACA' : forca < 70 ? '⚠️ MÉDIA' : '🛡️ FORTE';
-                texto.style.color = cor;
+    return data || [];
+}
 
-                // Tempo
-                document.getElementById('tempoHacker').textContent = tempo;
 
-                // Análise detalhada
-                const lista = document.getElementById('listaAnalise');
-                lista.innerHTML = `
-                    <div class="analise-item ${analise.len>=12?'sucesso':'erro'}">
-                        ${analise.len>=12?'✅':'❌'} Comprimento: ${analise.len} 
-                        ${analise.len<12?'(use 12+)':''}
-                    </div>
-                    <div class="analise-item ${analise.upper?'sucesso':'erro'}">
-                        ${analise.upper?'✅':'❌'} Maiúsculas (A-Z)
-                    </div>
-                    <div class="analise-item ${analise.num?'sucesso':'erro'}">
-                        ${analise.num?'✅':'❌'} Números (0-9)
-                    </div>
-                    <div class="analise-item ${analise.sym?'sucesso':'erro'}">
-                        ${analise.sym?'✅':'❌'} Símbolos (!@#$)
-                    </div>
-                    ${analise.comum?`<div class="analise-item erro">🚨 Palavra comum detectada</div>`:''}
-                    ${analise.pessoal?`<div class="analise-item erro">🚨 Dados pessoais na senha</div>`:''}
-                `;
+class App {
+    constructor() {
+        this.init();
+    }
 
-                // Sugestões
-                const sugestoes = document.getElementById('listaSugestoes');
-                const tips = [];
-                if (analise.len < 12) tips.push('• Use 12+ caracteres');
-                if (!analise.upper) tips.push('• Adicione MAIÚSCULAS');
-                if (!analise.num) tips.push('• Inclua NÚMEROS');
-                if (!analise.sym) tips.push('• Use SÍMBOLOS (!@#$%)');
-                if (analise.comum) tips.push('• Evite "123456", "password"');
-                if (analise.pessoal) tips.push('• Nunca use nome/telefone');
+    init() {
 
-                sugestoes.innerHTML = tips.length ? 
-                    tips.map(t => `<div class="sugestao-item">${t}</div>`).join('') :
-                    '<div class="sugestao-item sucesso">🎉 Senha excelente!</div>';
-
-                document.getElementById('resultadosDiv').classList.remove('hidden');
-                document.getElementById('resultadosDiv').scrollIntoView({behavior: 'smooth'});
-            }
-
-            async atualizarRanking() {
-                const dados = await carregarRanking();
-                const lista = document.getElementById('listaRanking');
-                
-                if (!dados.length) {
-                    lista.innerHTML = `
-                        <div class="ranking-empty">
-                            <div class="empty-icon">👥</div>
-                            <h3>Nenhum participante</h3>
-                            <p>Faça o teste e seja o #1!</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                lista.innerHTML = dados.map((item, i) => {
-                    const classe = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
-                    return `
-                        <div class="ranking-item">
-                            <div class="ranking-pos">${i+1}º</div>
-                            <div class="ranking-nome">${item.nome}</div>
-                            <div class="ranking-forca ${classe}">${item.forca}</div>
-                            <div class="ranking-tempo">${item.tempo_estimado}</div>
-                        </div>
-                    `;
-                }).join('');
-            }
+    // ✅ ATUALIZA AUTOMATICAMENTE
+    setInterval(() => {
+        if (document.getElementById('ranking').classList.contains('active')) {
+            this.atualizarRanking();
         }
+    }, 5000);
 
-        document.addEventListener('DOMContentLoaded', () => new App());
-    </script>
+    this.tabs();
+    this.forms();
+    this.senhaToggle();
+    this.atualizarRanking();
+
+    document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
+}
+    
+tabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+
+                document.querySelectorAll('.tab-btn')
+                    .forEach(b => b.classList.remove('active'));
+
+                document.querySelectorAll('.tab-content')
+                    .forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab)
+                    .classList.add('active');
+            };
+        });
+    }
+
+
+    forms() {
+        const nomeInput = document.getElementById('nomeInput');
+        const telInput = document.getElementById('telInput');
+        const petInput = document.getElementById('petInput');
+        const senhaInput = document.getElementById('senhaInput');
+
+        document.getElementById('formPessoalSubmit').onsubmit = (e) => {
+            e.preventDefault();
+
+            dadosPessoais.nome = nomeInput.value.trim();
+            dadosPessoais.telefone = telInput.value.trim();
+            dadosPessoais.pet = petInput.value.trim(); // ✅ só input (sem prompt)
+
+            document.getElementById('formPessoal').classList.remove('active');
+            document.getElementById('formSenha').classList.add('active');
+        };
+
+        document.getElementById('formSenhaSubmit').onsubmit = (e) => {
+            e.preventDefault();
+            this.testarSenha(senhaInput.value);
+        };
+    }
+
+    senhaToggle() {
+        const senhaInput = document.getElementById('senhaInput');
+        const mostrarSenha = document.getElementById('mostrarSenha');
+
+        mostrarSenha.onclick = () => {
+            senhaInput.type = senhaInput.type === 'password' ? 'text' : 'password';
+        };
+    }
+
+    async testarSenha(senha) {
+
+    // ✅ BLOQUEIO PRIMEIRO (ANTES DE TUDO)
+    if (localStorage.getItem("ja_testou")) {
+        alert("Você já fez o teste!");
+        return;
+    }
+
+    const analise = this.analisar(senha);
+    const tempo = this.tempoCrack(analise);
+    const forca = this.calcularForca(analise);
+
+    // ✅ BLOQUEIA DEPOIS DE PASSAR
+    localStorage.setItem("ja_testou", "true");
+
+    await salvarNoRanking(
+        dadosPessoais.nome,
+        dadosPessoais.telefone,
+        forca,
+        tempo.texto,
+        tempo.valor
+    );
+
+    this.mostrarResultados(analise, forca, tempo.texto);
+    this.atualizarRanking();
+}
+
+
+    analisar(s) {
+        const lower = s.toLowerCase();
+
+        const nome = dadosPessoais.nome?.toLowerCase().replace(/\s/g,'') || '';
+        const pet = dadosPessoais.pet?.toLowerCase() || '';
+        const tel = dadosPessoais.telefone || '';
+
+        const temLower = /[a-z]/.test(s);
+        const temUpper = /[A-Z]/.test(s);
+        const temNum = /\d/.test(s);
+        const temSym = /[^a-zA-Z0-9]/.test(s);
+
+        let tipos = [temLower, temUpper, temNum, temSym].filter(Boolean).length;
+
+        const repeticoes = s.length - new Set(s).size;
+        const sequencias = /(abc|123|qwerty|abcd)/i.test(lower);
+        const comum = /123456|password|senha|qwerty|abc123|admin/i.test(lower);
+
+        const pessoal =
+            (nome && lower.includes(nome.slice(0,5))) ||
+            (pet && lower.includes(pet)) ||
+            (tel && s.includes(tel.slice(0,4)));
+
+        let charset = 0;
+        if (temLower) charset += 26;
+        if (temUpper) charset += 26;
+        if (temNum) charset += 10;
+        if (temSym) charset += 32;
+
+        const entropia = Math.log2(Math.pow(charset || 1, s.length));
+
+        return { len:s.length, tipos, comum, pessoal, repeticoes, sequencias, entropia };
+    }
+
+    tempoCrack(a) {
+        let segundos = Math.pow(2, a.entropia) / 1e11;
+
+        if (a.comum) segundos *= 0.001;
+        if (a.pessoal) segundos *= 0.001;
+        if (a.sequencias) segundos *= 0.01;
+
+        segundos = Math.max(1, segundos);
+
+        let texto;
+        if (segundos < 60) texto = `${Math.round(segundos)} segundos`;
+        else if (segundos < 3600) texto = `${Math.round(segundos/60)} minutos`;
+        else if (segundos < 86400) texto = `${Math.round(segundos/3600)} horas`;
+        else if (segundos < 31536000) texto = `${Math.round(segundos/86400)} dias`;
+        else texto = `${Math.round(segundos/31536000)} anos`;
+
+        return { texto, valor: segundos };
+    }
+
+    calcularForca(a) {
+        let score = 0;
+
+        score += Math.min(a.len * 3, 30);
+        score += a.tipos * 10;
+
+        if (a.len >= 12) score += 15;
+
+        if (a.comum) score -= 40;
+        if (a.pessoal) score -= 50;
+        if (a.sequencias) score -= 20;
+        if (a.repeticoes > 2) score -= a.repeticoes * 3;
+
+        score += Math.min(a.entropia / 2, 15);
+
+        return Math.max(0, Math.min(100, score));
+    }
+
+    mostrarResultados(a, f, tempo) {
+        document.getElementById('textoForca').textContent =
+            f < 40 ? "🚨 FRACA" : f < 70 ? "⚠️ MÉDIA" : "🛡️ FORTE";
+
+        document.getElementById('tempoHacker').textContent = tempo;
+
+        document.getElementById('listaAnalise').innerHTML = `
+            <div class="analise-item">${a.len} caracteres</div>
+            <div class="analise-item">Repetições: ${a.repeticoes}</div>
+            ${a.pessoal ? '<div class="analise-item erro">Usa dados pessoais</div>' : ''}
+        `;
+
+        document.getElementById('resultadosDiv').classList.remove('hidden');
+    }
+
+    async atualizarRanking() {
+        const dados = await carregarRanking();
+
+        document.getElementById('listaRanking').innerHTML = dados.map((item,i)=>`
+            <div class="ranking-item">
+                <div>${i+1}º</div>
+                <div>${item.nome}</div>
+                <div>${item.tempo_estimado}</div>
+            </div>
+        `).join('');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => new App());
+</script>
+
 </body>
 </html>
