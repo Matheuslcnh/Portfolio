@@ -170,3 +170,53 @@
         text-align: center;
     }
 }
+
+/* Seu CSS existente + estas correções */
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+}
+
+.resultados.hidden {
+    display: none;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.ranking-pos {
+    font-weight: 700;
+    color: #6366f1;
+    min-width: 40px;
+}
+
+.ranking-forca {
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.ranking-forca.fraca { background: #fee2e2; color: #dc2626; }
+.ranking-forca.media { background: #fef3c7; color: #d97706; }
+.ranking-forca.forte { background: #d1fae5; color: #059669; }
+
+.analise-item, .sugestao-item {
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.analise-item.sucesso { background: #d1fae5; color: #059669; }
+.analise-item.erro { background: #fee2e2; color: #dc2626; }
