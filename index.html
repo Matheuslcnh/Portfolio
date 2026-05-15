@@ -3,38 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senha Segura - Teste a Força da Sua Senha</title>
+    <title>Labstar • Senha Segura</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; color: #333;
+
+        :root{
+            --blue-900:#0b1b3a;
+            --blue-800:#0f2a5a;
+            --blue-700:#1d4ed8;
+            --blue-600:#2563eb;
+            --blue-500:#3b82f6;
+            --blue-200:#bfdbfe;
+            --blue-100:#dbeafe;
+            --white:#ffffff;
+            --gray-50:#f8fafc;
+            --gray-100:#f1f5f9;
+            --gray-200:#e5e7eb;
+            --gray-600:#475569;
         }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eaf2ff 0%, #ffffff 40%, #dbeafe 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        
-        .header { 
-            background: rgba(255,255,255,0.95); 
-            backdrop-filter: blur(10px); 
-            padding: 20px 0; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(37,99,235,0.08);
         }
-        .header .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { 
-            font-size: 28px; font-weight: 700; 
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .header .container { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--blue-700), var(--blue-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: .2px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .tabs { display: flex; gap: 10px; }
-        .tab-btn { 
-            padding: 12px 24px; border: none; background: #f8f9fa; 
-            border-radius: 25px; cursor: pointer; font-weight: 500; 
-            transition: all 0.3s ease; font-size: 14px;
+        .logo-sub{
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(37,99,235,.85);
+            -webkit-text-fill-color: initial;
         }
-        .tab-btn:hover, .tab-btn.active { 
-            background: linear-gradient(45deg, #667eea, #764ba2); 
-            color: white; transform: translateY(-2px);
+
+        .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background: linear-gradient(45deg, var(--blue-700), var(--blue-500));
+            color: white;
+            transform: translateY(-2px);
         }
 
         .main { padding: 40px 0; }
@@ -44,122 +85,237 @@
         .form-section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-card { 
-            background: rgba(255,255,255,0.95); 
-            backdrop-filter: blur(20px); padding: 40px; 
-            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        .form-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            border: 1px solid rgba(37,99,235,0.08);
         }
         .step-indicator { display: flex; gap: 12px; margin-bottom: 30px; }
-        .step { 
-            width: 40px; height: 40px; border-radius: 50%; 
-            background: #f1f5f9; display: flex; align-items: center; 
-            justify-content: center; font-weight: 600; color: #64748b;
+        .step {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #f1f5f9; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; color: #64748b;
         }
-        .step.active { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        .step.active { background: linear-gradient(45deg, var(--blue-700), var(--blue-500)); color: white; }
 
-        h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; color: #1f2937; }
-        .subtitle { color: #64748b; font-size: 16px; margin-bottom: 30px; font-weight: 500; }
+        h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; color: #0f172a; }
+        .subtitle { color: #475569; font-size: 16px; margin-bottom: 30px; font-weight: 600; }
 
         .input-group { margin-bottom: 24px; }
-        label { display: block; margin-bottom: 8px; font-weight: 500; color: #374151; }
-        input { 
-            width: 100%; padding: 16px 20px; border: 2px solid #e5e7eb; 
-            border-radius: 12px; font-size: 16px; transition: all 0.3s; 
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #334155; }
+        input {
+            width: 100%; padding: 16px 20px; border: 2px solid #e5e7eb;
+            border-radius: 12px; font-size: 16px; transition: all 0.2s;
             font-family: inherit;
         }
-        input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        input:focus { outline: none; border-color: var(--blue-600); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
         input:disabled { background: #f3f4f6; cursor: not-allowed; }
 
         .password-input-group { position: relative; margin-bottom: 24px; }
-        .show-password { 
-            position: absolute; right: 16px; top: 50%; 
-            transform: translateY(-50%); background: none; border: none; 
+        .show-password {
+            position: absolute; right: 16px; top: 50%;
+            transform: translateY(-50%); background: none; border: none;
             font-size: 20px; cursor: pointer; color: #6b7280;
         }
 
-        .btn-primary { 
-            width: 100%; padding: 18px; background: linear-gradient(45deg, #667eea, #764ba2); 
-            color: white; border: none; border-radius: 12px; font-size: 16px; 
-            font-weight: 600; cursor: pointer; transition: all 0.3s; 
+        .btn-primary {
+            width: 100%; padding: 18px;
+            background: linear-gradient(45deg, var(--blue-700), var(--blue-500));
+            color: white; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 800; cursor: pointer;
+            transition: all 0.25s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,99,235,0.28); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .resultados.hidden { display: none; }
-        .success-message { 
-            background: linear-gradient(45deg, #10b981, #059669); color: white; 
-            padding: 20px; border-radius: 16px; text-align: center; 
-            font-size: 18px; font-weight: 600; margin-bottom: 30px;
+        .success-message {
+            background: linear-gradient(45deg, #0ea5e9, #2563eb);
+            color: white; padding: 20px; border-radius: 16px; text-align: center;
+            font-size: 18px; font-weight: 800; margin-bottom: 30px;
         }
+
         .strength-meter { margin-bottom: 30px; }
-        .strength-bar { 
-            width: 100%; height: 12px; background: #e5e7eb; 
+        .strength-bar {
+            width: 100%; height: 12px; background: #e5e7eb;
             border-radius: 6px; overflow: hidden; margin-bottom: 12px;
         }
         .strength-fill { height: 100%; transition: all 1s ease; border-radius: 6px; }
-        .strength-text { font-size: 24px; font-weight: 700; display: block; text-align: center; }
+        .strength-text { font-size: 24px; font-weight: 900; display: block; text-align: center; }
 
-        .tempo-estimado { 
-            background: #f8fafc; padding: 24px; border-radius: 16px; 
+        .tempo-estimado {
+            background: #f8fafc; padding: 24px; border-radius: 16px;
             text-align: center; margin-bottom: 30px;
+            border: 1px solid rgba(37,99,235,0.08);
         }
-        .tempo-estimado h3 { color: #374151; margin-bottom: 12px; font-size: 18px; }
-        .tempo-display { font-size: 32px; font-weight: 700; color: #1e40af; }
+        .tempo-estimado h3 { color: #334155; margin-bottom: 12px; font-size: 18px; }
+        .tempo-display { font-size: 32px; font-weight: 900; color: var(--blue-700); }
 
-        .analise-detalhada h3, .sugestoes h3 { 
-            color: #374151; margin-bottom: 16px; font-size: 20px; font-weight: 600;
+        .analise-detalhada h3, .sugestoes h3 {
+            color: #334155; margin-bottom: 16px; font-size: 20px; font-weight: 800;
         }
-        .analise-item, .sugestao-item { 
+        .analise-item, .sugestao-item {
             padding: 12px 16px; margin-bottom: 8px; border-radius: 12px; font-size: 15px;
         }
         .analise-item.sucesso { background: #d1fae5; color: #059669; border-left: 4px solid #10b981; }
         .analise-item.erro { background: #fee2e2; color: #dc2626; border-left: 4px solid #ef4444; }
-        .sugestao-item { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
+        .sugestao-item { background: #dbeafe; color: #1d4ed8; border-left: 4px solid #2563eb; }
 
-        .ranking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .refresh-btn { 
-            padding: 10px 20px; background: rgba(255,255,255,0.3); 
-            border: 2px solid rgba(255,255,255,0.5); border-radius: 25px; 
-            cursor: pointer; font-weight: 500; transition: all 0.3s; 
+        .ranking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 12px; }
+        .refresh-btn {
+            padding: 10px 20px; background: rgba(37,99,235,0.10);
+            border: 2px solid rgba(37,99,235,0.20); border-radius: 25px;
+            cursor: pointer; font-weight: 800; transition: all 0.2s;
+            color: var(--blue-700);
         }
-        .refresh-btn:hover { background: rgba(255,255,255,0.5); transform: translateY(-1px); }
+        .refresh-btn:hover { background: rgba(37,99,235,0.18); transform: translateY(-1px); }
 
-        .ranking-list { 
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); 
-            border-radius: 24px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        .ranking-list {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            border: 1px solid rgba(37,99,235,0.08);
         }
         .ranking-empty { text-align: center; padding: 60px 20px; color: #64748b; }
         .empty-icon { font-size: 64px; margin-bottom: 20px; display: block; }
 
-        .ranking-item { 
-            display: flex; align-items: center; gap: 20px; padding: 20px; 
-            background: #f8fafc; border-radius: 16px; margin-bottom: 12px; 
-            transition: all 0.3s;
+        .ranking-item {
+            display: flex; align-items: center; gap: 20px; padding: 20px;
+            background: #f8fafc; border-radius: 16px; margin-bottom: 12px;
+            transition: all 0.25s;
+            border: 1px solid rgba(37,99,235,0.06);
         }
-        .ranking-item:hover { transform: translateX(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .ranking-pos { font-size: 24px; font-weight: 700; color: #6366f1; min-width: 50px; }
-        .ranking-nome { flex: 1; font-weight: 500; color: #374151; }
-        .ranking-forca { 
-            padding: 8px 16px; border-radius: 20px; font-weight: 600; 
+        .ranking-item:hover { transform: translateX(6px); box-shadow: 0 10px 30px rgba(2,6,23,0.08); }
+        .ranking-pos { font-size: 24px; font-weight: 900; color: var(--blue-700); min-width: 74px; }
+        .ranking-nome { flex: 1; font-weight: 700; color: #0f172a; }
+
+        /* Nome clicável (para abrir telefone) */
+        .ranking-nome-btn{
+            background: transparent;
+            border: none;
+            padding: 0;
+            text-align: left;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+            color: var(--blue-700);
+            text-decoration: underline;
+            text-decoration-color: rgba(37,99,235,.35);
+            text-underline-offset: 4px;
+        }
+        .ranking-nome-btn:hover{
+            color: var(--blue-600);
+            text-decoration-color: rgba(37,99,235,.75);
+        }
+
+        .ranking-forca {
+            padding: 8px 16px; border-radius: 20px; font-weight: 900;
             font-size: 14px; min-width: 80px; text-align: center;
         }
         .ranking-forca.fraca { background: #fee2e2; color: #dc2626; }
         .ranking-forca.media { background: #fef3c7; color: #d97706; }
         .ranking-forca.forte { background: #d1fae5; color: #059669; }
-        .ranking-tempo { color: #6b7280; font-weight: 500; }
+
+        .ranking-tempo { color: #475569; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+        /* ✨ Extra: Top 3 com brilho suave */
+        .ranking-item:nth-child(1) { box-shadow: 0 12px 30px rgba(37,99,235,0.18); }
+        .ranking-item:nth-child(2) { box-shadow: 0 10px 24px rgba(37,99,235,0.14); }
+        .ranking-item:nth-child(3) { box-shadow: 0 8px 18px rgba(37,99,235,0.10); }
+
+        /* Modal telefone */
+        .modal-backdrop{
+            position: fixed;
+            inset: 0;
+            background: rgba(2,6,23,0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 9999;
+        }
+        .modal-backdrop.active{ display:flex; }
+
+        .modal{
+            width: 100%;
+            max-width: 520px;
+            background: rgba(255,255,255,0.98);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            border: 1px solid rgba(37,99,235,0.15);
+        }
+        .modal-header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .modal-title{
+            font-weight: 900;
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .modal-close{
+            border: none;
+            background: rgba(37,99,235,0.10);
+            color: var(--blue-700);
+            font-weight: 900;
+            border-radius: 12px;
+            padding: 8px 12px;
+            cursor:pointer;
+        }
+        .modal-body{
+            background: var(--gray-50);
+            border: 1px solid rgba(37,99,235,0.12);
+            border-radius: 14px;
+            padding: 14px;
+            margin: 12px 0 16px;
+        }
+        .modal-phone{
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--blue-700);
+            letter-spacing: .5px;
+        }
+        .modal-actions{
+            display:flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-secondary{
+            flex: 1;
+            min-width: 140px;
+            border: 2px solid rgba(37,99,235,0.22);
+            background: rgba(37,99,235,0.08);
+            color: var(--blue-700);
+            font-weight: 900;
+            border-radius: 12px;
+            padding: 12px 14px;
+            cursor:pointer;
+        }
+        .btn-secondary:hover{
+            background: rgba(37,99,235,0.14);
+        }
 
         @media (max-width: 768px) {
             .container { padding: 10px; }
-            .header .container { flex-direction: column; gap: 20px; }
-            .ranking-item { flex-direction: column; text-align: center; gap: 12px; }
+            .header .container { flex-direction: column; align-items: flex-start; }
+            .ranking-item { flex-direction: column; text-align: center; gap: 10px; }
+            .ranking-pos { min-width: auto; }
+            .ranking-nome-btn{ text-align:center; }
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">🔐 Senha Segura</h1>
+            <h1 class="logo">💙 Labstar <span class="logo-sub">Senha Segura</span></h1>
             <div class="tabs">
                 <button class="tab-btn active" data-tab="teste">Teste de Senha</button>
                 <button class="tab-btn" data-tab="ranking">🏆 Ranking</button>
@@ -183,7 +339,7 @@
                                 <label>Nome Completo *</label>
                                 <input type="text" id="nomeInput" required>
                             </div>
-                            
+
                             <div class="input-group">
                                 <label>Nome do Pet (opcional)</label>
                                 <input type="text" id="petInput" placeholder="Ex: Rex, Luna">
@@ -193,6 +349,7 @@
                                 <label>Telefone *</label>
                                 <input type="tel" id="telInput" placeholder="(11) 99999-9999" required>
                             </div>
+
                             <button type="submit" class="btn-primary">Próximo →</button>
                         </form>
                     </div>
@@ -207,11 +364,11 @@
                             <div class="step active">2</div>
                         </div>
                         <h2>🔑 Digite Sua Senha</h2>
-                        <p class="subtitle" id="senhaSubtitle">Só 1x por dia! Vai pro ranking 🔥</p>
-                        
+                        <p class="subtitle" id="senhaSubtitle">Só 1x por telefone! Vai pro ranking 🔥</p>
+
                         <form id="formSenhaSubmit">
                             <div class="password-input-group">
-                                <input type="password" id="senhaInput" placeholder="Sua senha real..." required maxlength="50">
+                                <input type="password" id="senhaInput" placeholder="Sua senha..." required maxlength="50">
                                 <button type="button" class="show-password" id="mostrarSenha">👁️</button>
                             </div>
                             <button type="submit" class="btn-primary" id="btnTestar">🔍 Testar Senha</button>
@@ -258,239 +415,478 @@
         </section>
     </main>
 
+    <!-- Modal para telefone -->
+    <div id="telModalBackdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="telModalTitle">
+            <div class="modal-header">
+                <div class="modal-title" id="telModalTitle">📞 Contato</div>
+                <button class="modal-close" id="telModalClose">Fechar ✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-weight:800; color:#0f172a; margin-bottom:6px;" id="telModalName">—</div>
+                <div class="modal-phone" id="telModalPhone">—</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="telCopyBtn">📋 Copiar</button>
+                <button class="btn-secondary" id="telCallBtn">📲 Ligar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://kpkyykfwtjwtyvhraynt.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_AcK1pnSmzSzkf4WhsFCesA_TUb9kUmB';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let usuarioJaTestou = false;
-let dadosPessoais = {};
+        let dadosPessoais = {};
+        let usuarioJaTestou = false;
 
-async function salvarNoRanking(nome, telefone, forca, tempoTexto, tempoValor) {
-    await supabaseClient.from('ranking').upsert({
-        nome,
-        telefone,
-        forca,
-        tempo_estimado: tempoTexto,
-        tempo_valor: tempoValor,
-        timestamp: new Date().toISOString()
-    }, { onConflict: 'telefone' });
-}
-
-async function carregarRanking() {
-    const { data } = await supabaseClient
-        .from('ranking')
-        .select('*')
-        .not('tempo_valor', 'is', null) // ✅ ESSENCIAL
-        .order('tempo_valor', { ascending: false })
-        .limit(20);
-
-    return data || [];
-}
-
-
-class App {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-
-    // ✅ ATUALIZA AUTOMATICAMENTE
-    setInterval(() => {
-        if (document.getElementById('ranking').classList.contains('active')) {
-            this.atualizarRanking();
+        // ===== Helpers de formatação =====
+        function formatNumeroPtBR(n) {
+            return new Intl.NumberFormat('pt-BR').format(n);
         }
-    }, 5000);
 
-    this.tabs();
-    this.forms();
-    this.senhaToggle();
-    this.atualizarRanking();
+        // Corrige tempo antigo salvo sem ponto/sem espaço
+        function normalizarTempoTexto(tempoTexto) {
+            if (!tempoTexto) return '';
+            const t = String(tempoTexto).trim();
+            const m = t.match(/^([\d\.,]+)\s*(.*)$/);
+            if (!m) return t;
 
-    document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
-}
-    
-tabs() {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.onclick = () => {
+            const somenteDigitos = m[1].replace(/[^\d]/g, '');
+            const valor = Number(somenteDigitos || 0);
+            const unidade = (m[2] || '').trim();
 
-                document.querySelectorAll('.tab-btn')
-                    .forEach(b => b.classList.remove('active'));
+            return `${formatNumeroPtBR(valor)}${unidade ? ' ' + unidade : ''}`;
+        }
 
-                document.querySelectorAll('.tab-content')
-                    .forEach(c => c.classList.remove('active'));
+        // ===== Supabase =====
+        async function verificarUsuarioExistente(telefone) {
+            const { data } = await supabaseClient
+                .from('ranking')
+                .select('telefone')
+                .eq('telefone', telefone)
+                .maybeSingle();
 
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab)
-                    .classList.add('active');
-            };
-        });
-    }
+            return !!data;
+        }
 
+        // ✅ BLOQUEIO REAL por telefone: INSERT (telefone é UNIQUE)
+        async function salvarNoRanking(nome, telefone, forca, tempoTexto, tempoValor) {
+            const { error } = await supabaseClient
+                .from('ranking')
+                .insert({
+                    nome,
+                    telefone,
+                    forca,
+                    tempo_estimado: tempoTexto,
+                    tempo_valor: tempoValor,
+                    timestamp: new Date().toISOString()
+                });
 
-    forms() {
-        const nomeInput = document.getElementById('nomeInput');
-        const telInput = document.getElementById('telInput');
-        const petInput = document.getElementById('petInput');
-        const senhaInput = document.getElementById('senhaInput');
+            if (error) {
+                // 23505 = unique_violation (Postgres)
+                if (error.code === '23505') return { ok: false, motivo: 'ja_existe' };
+                console.error('Erro ao salvar:', error);
+                return { ok: false, motivo: 'erro' };
+            }
 
-        document.getElementById('formPessoalSubmit').onsubmit = (e) => {
-            e.preventDefault();
+            return { ok: true };
+        }
 
-            dadosPessoais.nome = nomeInput.value.trim();
-            dadosPessoais.telefone = telInput.value.trim();
-            dadosPessoais.pet = petInput.value.trim(); // ✅ só input (sem prompt)
+        async function carregarRanking() {
+            const { data, error } = await supabaseClient
+                .from('ranking')
+                .select('*')
+                .not('tempo_valor', 'is', null)
+                .order('tempo_valor', { ascending: false })
+                .limit(20);
 
-            document.getElementById('formPessoal').classList.remove('active');
-            document.getElementById('formSenha').classList.add('active');
-        };
+            if (error) {
+                console.error('Erro ao carregar ranking:', error);
+                return [];
+            }
 
-        document.getElementById('formSenhaSubmit').onsubmit = (e) => {
-            e.preventDefault();
-            this.testarSenha(senhaInput.value);
-        };
-    }
+            return data || [];
+        }
 
-    senhaToggle() {
-        const senhaInput = document.getElementById('senhaInput');
-        const mostrarSenha = document.getElementById('mostrarSenha');
+        // ===== App =====
+        class App {
+            constructor() { this.init(); }
 
-        mostrarSenha.onclick = () => {
-            senhaInput.type = senhaInput.type === 'password' ? 'text' : 'password';
-        };
-    }
+            init() {
+                // atualiza automaticamente quando estiver na aba ranking
+                if (this._rankingTimer) clearInterval(this._rankingTimer);
+                this._rankingTimer = setInterval(() => {
+                    if (document.getElementById('ranking').classList.contains('active')) {
+                        this.atualizarRanking();
+                    }
+                }, 5000);
 
-    async testarSenha(senha) {
+                this.tabs();
+                this.forms();
+                this.senhaToggle();
+                this.modalTelefone();
+                this.atualizarRanking();
 
-    // ✅ BLOQUEIO PRIMEIRO (ANTES DE TUDO)
-    if (localStorage.getItem("ja_testou")) {
-        alert("Você já fez o teste!");
-        return;
-    }
+                document.getElementById('btnAtualizar').onclick = () => this.atualizarRanking();
+            }
 
-    const analise = this.analisar(senha);
-    const tempo = this.tempoCrack(analise);
-    const forca = this.calcularForca(analise);
+            tabs() {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.onclick = () => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-    // ✅ BLOQUEIA DEPOIS DE PASSAR
-    localStorage.setItem("ja_testou", "true");
+                        btn.classList.add('active');
+                        document.getElementById(btn.dataset.tab).classList.add('active');
 
-    await salvarNoRanking(
-        dadosPessoais.nome,
-        dadosPessoais.telefone,
-        forca,
-        tempo.texto,
-        tempo.valor
-    );
+                        // Se abriu ranking, atualiza na hora
+                        if (btn.dataset.tab === 'ranking') this.atualizarRanking();
+                    };
+                });
+            }
 
-    this.mostrarResultados(analise, forca, tempo.texto);
-    this.atualizarRanking();
-}
+            forms() {
+                const nomeInput = document.getElementById('nomeInput');
+                const telInput = document.getElementById('telInput');
+                const petInput = document.getElementById('petInput');
+                const senhaInput = document.getElementById('senhaInput');
 
+                document.getElementById('formPessoalSubmit').onsubmit = async (e) => {
+                    e.preventDefault();
 
-    analisar(s) {
-        const lower = s.toLowerCase();
+                    dadosPessoais.nome = nomeInput.value.trim();
+                    dadosPessoais.telefone = telInput.value.trim();
+                    dadosPessoais.pet = petInput.value.trim();
 
-        const nome = dadosPessoais.nome?.toLowerCase().replace(/\s/g,'') || '';
-        const pet = dadosPessoais.pet?.toLowerCase() || '';
-        const tel = dadosPessoais.telefone || '';
+                    if (!dadosPessoais.nome || !dadosPessoais.telefone) {
+                        alert('❌ Preencha nome e telefone!');
+                        return;
+                    }
 
-        const temLower = /[a-z]/.test(s);
-        const temUpper = /[A-Z]/.test(s);
-        const temNum = /\d/.test(s);
-        const temSym = /[^a-zA-Z0-9]/.test(s);
+                    // chave local por telefone
+                    const chaveTeste = "testou_" + dadosPessoais.telefone;
+                    localStorage.setItem('telefone', dadosPessoais.telefone);
 
-        let tipos = [temLower, temUpper, temNum, temSym].filter(Boolean).length;
+                    // verifica no banco também (bloqueio real)
+                    const existe = await verificarUsuarioExistente(dadosPessoais.telefone);
+                    usuarioJaTestou = existe || !!localStorage.getItem(chaveTeste);
 
-        const repeticoes = s.length - new Set(s).size;
-        const sequencias = /(abc|123|qwerty|abcd)/i.test(lower);
-        const comum = /123456|password|senha|qwerty|abc123|admin/i.test(lower);
+                    // troca para etapa senha
+                    document.getElementById('formPessoal').classList.remove('active');
+                    document.getElementById('formSenha').classList.add('active');
 
-        const pessoal =
-            (nome && lower.includes(nome.slice(0,5))) ||
-            (pet && lower.includes(pet)) ||
-            (tel && s.includes(tel.slice(0,4)));
+                    // se já testou, desabilita
+                    if (usuarioJaTestou) {
+                        document.getElementById('senhaSubtitle').innerHTML =
+                            'Você já testou com esse telefone! <strong>Veja no ranking ➡️</strong>';
+                        senhaInput.disabled = true;
+                        document.getElementById('btnTestar').disabled = true;
+                        document.getElementById('btnTestar').innerHTML = 'Já testou ✅';
+                    }
+                };
 
-        let charset = 0;
-        if (temLower) charset += 26;
-        if (temUpper) charset += 26;
-        if (temNum) charset += 10;
-        if (temSym) charset += 32;
+                document.getElementById('formSenhaSubmit').onsubmit = async (e) => {
+                    e.preventDefault();
+                    await this.testarSenha(senhaInput.value);
+                };
+            }
 
-        const entropia = Math.log2(Math.pow(charset || 1, s.length));
+            senhaToggle() {
+                const senhaInput = document.getElementById('senhaInput');
+                const mostrarSenha = document.getElementById('mostrarSenha');
 
-        return { len:s.length, tipos, comum, pessoal, repeticoes, sequencias, entropia };
-    }
+                mostrarSenha.onclick = () => {
+                    senhaInput.type = senhaInput.type === 'password' ? 'text' : 'password';
+                    mostrarSenha.textContent = senhaInput.type === 'password' ? '👁️' : '🙈';
+                };
+            }
 
-    tempoCrack(a) {
-        let segundos = Math.pow(2, a.entropia) / 1e11;
+            // ===== Clique no nome abre telefone =====
+            modalTelefone() {
+                const backdrop = document.getElementById('telModalBackdrop');
+                const closeBtn = document.getElementById('telModalClose');
+                const copyBtn = document.getElementById('telCopyBtn');
+                const callBtn = document.getElementById('telCallBtn');
 
-        if (a.comum) segundos *= 0.001;
-        if (a.pessoal) segundos *= 0.001;
-        if (a.sequencias) segundos *= 0.01;
+                const nameEl = document.getElementById('telModalName');
+                const phoneEl = document.getElementById('telModalPhone');
 
-        segundos = Math.max(1, segundos);
+                const close = () => {
+                    backdrop.classList.remove('active');
+                    backdrop.setAttribute('aria-hidden', 'true');
+                };
 
-        let texto;
-        if (segundos < 60) texto = `${Math.round(segundos)} segundos`;
-        else if (segundos < 3600) texto = `${Math.round(segundos/60)} minutos`;
-        else if (segundos < 86400) texto = `${Math.round(segundos/3600)} horas`;
-        else if (segundos < 31536000) texto = `${Math.round(segundos/86400)} dias`;
-        else texto = `${Math.round(segundos/31536000)} anos`;
+                closeBtn.onclick = close;
+                backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
-        return { texto, valor: segundos };
-    }
+                copyBtn.onclick = async () => {
+                    const tel = phoneEl.textContent.trim();
+                    try {
+                        await navigator.clipboard.writeText(tel);
+                        copyBtn.textContent = '✅ Copiado';
+                        setTimeout(() => (copyBtn.textContent = '📋 Copiar'), 1200);
+                    } catch {
+                        alert('Não foi possível copiar. Copie manualmente: ' + tel);
+                    }
+                };
 
-    calcularForca(a) {
-        let score = 0;
+                callBtn.onclick = () => {
+                    const tel = phoneEl.textContent.trim();
+                    const clean = tel.replace(/[^\d+]/g, '');
+                    window.location.href = `tel:${clean}`;
+                };
 
-        score += Math.min(a.len * 3, 30);
-        score += a.tipos * 10;
+                // delegação de clique no ranking
+                const lista = document.getElementById('listaRanking');
+                lista.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.ranking-nome-btn');
+                    if (!btn) return;
 
-        if (a.len >= 12) score += 15;
+                    const tel = btn.dataset.tel || '';
+                    const nome = btn.dataset.nome || btn.textContent.trim();
 
-        if (a.comum) score -= 40;
-        if (a.pessoal) score -= 50;
-        if (a.sequencias) score -= 20;
-        if (a.repeticoes > 2) score -= a.repeticoes * 3;
+                    if (!tel) {
+                        alert('Telefone não disponível.');
+                        return;
+                    }
 
-        score += Math.min(a.entropia / 2, 15);
+                    nameEl.textContent = nome;
+                    phoneEl.textContent = tel;
 
-        return Math.max(0, Math.min(100, score));
-    }
+                    backdrop.classList.add('active');
+                    backdrop.setAttribute('aria-hidden', 'false');
+                });
+            }
 
-    mostrarResultados(a, f, tempo) {
-        document.getElementById('textoForca').textContent =
-            f < 40 ? "🚨 FRACA" : f < 70 ? "⚠️ MÉDIA" : "🛡️ FORTE";
+            async testarSenha(senha) {
+                if (!dadosPessoais.nome || !dadosPessoais.telefone) {
+                    alert("Preencha seus dados primeiro!");
+                    return;
+                }
 
-        document.getElementById('tempoHacker').textContent = tempo;
+                const chaveTeste = "testou_" + dadosPessoais.telefone;
 
-        document.getElementById('listaAnalise').innerHTML = `
-            <div class="analise-item">${a.len} caracteres</div>
-            <div class="analise-item">Repetições: ${a.repeticoes}</div>
-            ${a.pessoal ? '<div class="analise-item erro">Usa dados pessoais</div>' : ''}
-        `;
+                // bloqueio local (UX)
+                if (localStorage.getItem(chaveTeste)) {
+                    alert("Você já fez o teste com esse telefone!");
+                    return;
+                }
 
-        document.getElementById('resultadosDiv').classList.remove('hidden');
-    }
+                // bloqueio em memória (cliques repetidos)
+                if (usuarioJaTestou) {
+                    alert("Você já fez o teste!");
+                    return;
+                }
 
-    async atualizarRanking() {
-        const dados = await carregarRanking();
+                if (!senha || senha.length < 1) {
+                    alert("Digite a senha!");
+                    return;
+                }
 
-        document.getElementById('listaRanking').innerHTML = dados.map((item,i)=>`
-            <div class="ranking-item">
-                <div>${i+1}º</div>
-                <div>${item.nome}</div>
-                <div>${item.tempo_estimado}</div>
-            </div>
-        `).join('');
-    }
-}
+                const analise = this.analisar(senha);
+                const tempo = this.tempoCrack(analise);
+                const forca = this.calcularForca(analise);
 
-document.addEventListener('DOMContentLoaded', () => new App());
-</script>
+                const resultado = await salvarNoRanking(
+                    dadosPessoais.nome,
+                    dadosPessoais.telefone,
+                    forca,
+                    tempo.texto,
+                    tempo.valor
+                );
 
+                if (!resultado.ok) {
+                    if (resultado.motivo === 'ja_existe') {
+                        alert("Esse telefone já participou! Veja no ranking 🏆");
+                        localStorage.setItem(chaveTeste, "true");
+                        usuarioJaTestou = true;
+                        document.getElementById('senhaInput').disabled = true;
+                        document.getElementById('btnTestar').disabled = true;
+                        document.getElementById('btnTestar').innerHTML = "Já testou ✅";
+                        return;
+                    }
+                    alert("Erro ao salvar. Tente novamente.");
+                    return;
+                }
+
+                // marca como testado só se salvou mesmo
+                localStorage.setItem(chaveTeste, "true");
+                usuarioJaTestou = true;
+
+                // desabilita UI
+                document.getElementById('senhaInput').disabled = true;
+                document.getElementById('btnTestar').disabled = true;
+                document.getElementById('btnTestar').innerHTML = "Já testou ✅";
+
+                this.mostrarResultados(analise, forca, tempo.texto);
+                this.atualizarRanking(); // atualiza imediatamente após testar
+            }
+
+            analisar(s) {
+                const lower = s.toLowerCase();
+
+                const nome = dadosPessoais.nome?.toLowerCase().replace(/\s/g,'') || '';
+                const pet  = dadosPessoais.pet?.toLowerCase() || '';
+                const tel  = dadosPessoais.telefone || '';
+
+                const temLower = /[a-z]/.test(s);
+                const temUpper = /[A-Z]/.test(s);
+                const temNum   = /\d/.test(s);
+                const temSym   = /[^a-zA-Z0-9]/.test(s);
+
+                let tipos = [temLower, temUpper, temNum, temSym].filter(Boolean).length;
+
+                const repeticoes = s.length - new Set(s).size;
+                const sequencias = /(abc|123|qwerty|abcd|0000|1111|9999)/i.test(lower);
+                const comum      = /123456|password|senha|qwerty|abc123|admin|letmein/i.test(lower);
+
+                const pessoal =
+                    (nome && lower.includes(nome.slice(0,5))) ||
+                    (pet && lower.includes(pet)) ||
+                    (tel && s.includes(tel.replace(/\D/g,'').slice(0,4))); // pega dígitos do tel
+
+                let charset = 0;
+                if (temLower) charset += 26;
+                if (temUpper) charset += 26;
+                if (temNum) charset += 10;
+                if (temSym) charset += 32;
+
+                const entropia = Math.log2(Math.pow(charset || 1, s.length));
+
+                return { len:s.length, tipos, comum, pessoal, repeticoes, sequencias, entropia, temUpper, temNum, temSym };
+            }
+
+            tempoCrack(a) {
+                let segundos = Math.pow(2, a.entropia) / 1e11;
+
+                if (a.comum) segundos *= 0.001;
+                if (a.pessoal) segundos *= 0.001;
+                if (a.sequencias) segundos *= 0.01;
+
+                segundos = Math.max(1, segundos);
+
+                let texto;
+                if (segundos < 60) {
+                    texto = `${formatNumeroPtBR(Math.round(segundos))} segundos`;
+                } else if (segundos < 3600) {
+                    texto = `${formatNumeroPtBR(Math.round(segundos / 60))} minutos`;
+                } else if (segundos < 86400) {
+                    texto = `${formatNumeroPtBR(Math.round(segundos / 3600))} horas`;
+                } else if (segundos < 31536000) {
+                    texto = `${formatNumeroPtBR(Math.round(segundos / 86400))} dias`;
+                } else {
+                    texto = `${formatNumeroPtBR(Math.round(segundos / 31536000))} anos`;
+                }
+
+                return { texto, valor: segundos };
+            }
+
+            calcularForca(a) {
+                let score = 0;
+
+                score += Math.min(a.len * 3, 30);
+                score += a.tipos * 10;
+
+                if (a.len >= 12) score += 15;
+
+                if (a.comum) score -= 40;
+                if (a.pessoal) score -= 50;
+                if (a.sequencias) score -= 20;
+                if (a.repeticoes > 2) score -= a.repeticoes * 3;
+
+                score += Math.min(a.entropia / 2, 15);
+
+                return Math.max(0, Math.min(100, score));
+            }
+
+            mostrarResultados(a, f, tempo) {
+                const barra = document.getElementById('barraForca');
+                const texto = document.getElementById('textoForca');
+                const cor = f < 40 ? '#ef4444' : f < 70 ? '#f59e0b' : '#10b981';
+
+                barra.style.width = f + '%';
+                barra.style.background = cor;
+
+                texto.textContent = f < 40 ? "🚨 FRACA" : f < 70 ? "⚠️ MÉDIA" : "🛡️ FORTE";
+                texto.style.color = cor;
+
+                document.getElementById('tempoHacker').textContent = tempo;
+
+                document.getElementById('listaAnalise').innerHTML = `
+                    <div class="analise-item ${a.len>=12?'sucesso':'erro'}">
+                        ${a.len>=12?'✅':'❌'} Comprimento: ${a.len} ${a.len<12?'(use 12+)':''}
+                    </div>
+                    <div class="analise-item ${a.tipos>=3?'sucesso':'erro'}">
+                        ${a.tipos>=3?'✅':'❌'} Variedade: ${a.tipos}/4 (use letras/números/símbolos)
+                    </div>
+                    <div class="analise-item ${!a.comum?'sucesso':'erro'}">
+                        ${!a.comum?'✅':'❌'} Palavra comum: ${a.comum?'detectada':''}
+                    </div>
+                    <div class="analise-item ${!a.pessoal?'sucesso':'erro'}">
+                        ${!a.pessoal?'✅':'❌'} Dados pessoais: ${a.pessoal?'detectados':''}
+                    </div>
+                `;
+
+                const tips = [];
+                if (a.len < 12) tips.push('• Use 12+ caracteres');
+                if (a.tipos < 3) tips.push('• Misture letras, números e símbolos');
+                if (a.comum) tips.push('• Evite senhas comuns (123456, password, admin)');
+                if (a.pessoal) tips.push('• Não use nome, pet ou telefone');
+                if (!a.temUpper) tips.push('• Adicione MAIÚSCULAS (A-Z)');
+                if (!a.temNum) tips.push('• Inclua NÚMEROS (0-9)');
+                if (!a.temSym) tips.push('• Use SÍMBOLOS (!@#$%)');
+
+                document.getElementById('listaSugestoes').innerHTML = tips.length
+                    ? tips.map(t => `<div class="sugestao-item">${t}</div>`).join('')
+                    : `<div class="sugestao-item">🎉 Senha excelente!</div>`;
+
+                document.getElementById('resultadosDiv').classList.remove('hidden');
+                document.getElementById('resultadosDiv').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            async atualizarRanking() {
+                const dados = await carregarRanking();
+                const lista = document.getElementById('listaRanking');
+
+                if (!dados.length) {
+                    lista.innerHTML = `
+                        <div class="ranking-empty">
+                            <div class="empty-icon">👥</div>
+                            <h3>Sem participantes</h3>
+                            <p>Faça o teste primeiro!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                lista.innerHTML = dados.map((item, i) => {
+                    const medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+                    const classeForca = item.forca < 40 ? 'fraca' : item.forca < 70 ? 'media' : 'forte';
+                    const tempoBonito = normalizarTempoTexto(item.tempo_estimado);
+
+                    return `
+                        <div class="ranking-item" style="${i < 3 ? 'border:2px solid rgba(37,99,235,0.18); background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);' : ''}">
+                            <div class="ranking-pos">${medalha} ${i+1}º</div>
+
+                            <div class="ranking-nome">
+                                <button class="ranking-nome-btn" data-tel="${item.telefone}" data-nome="${item.nome}" title="Clique para ver o telefone">
+                                    ${item.nome}
+                                </button>
+                            </div>
+
+                            <div class="ranking-forca ${classeForca}">${item.forca}</div>
+                            <div class="ranking-tempo">⏱️ ${tempoBonito}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new App());
+    </script>
 </body>
 </html>
