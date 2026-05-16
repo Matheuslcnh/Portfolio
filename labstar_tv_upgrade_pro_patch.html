@@ -1,0 +1,170 @@
+<!-- =========================================================
+PATCH PRO LABSTAR TV — Campeão cinematográfico + QR + Carrossel + Blindagem
+Cole este bloco ANTES de </body> no HTML principal.
+Não altera o Supabase nem a lógica de cadastro; apenas adiciona recursos visuais na TV/Admin.
+========================================================= -->
+<style>
+  .labstar-extra-panel{background:rgba(2,8,23,.78);border:1px solid rgba(103,232,249,.22);border-radius:28px;padding:20px;color:#eaf4ff;box-shadow:0 24px 70px rgba(0,0,0,.24);overflow:hidden;position:relative}
+  .labstar-extra-title{font-weight:900;font-size:18px;margin-bottom:12px;color:#e0f2fe;display:flex;align-items:center;gap:8px}
+  .labstar-blindagem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .labstar-shield-card{background:linear-gradient(135deg,rgba(29,78,216,.22),rgba(0,217,255,.10));border:1px solid rgba(103,232,249,.18);border-radius:18px;padding:14px;min-height:112px;position:relative;overflow:hidden}
+  .labstar-shield-card:after{content:'';position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg,#1d4ed8,#00d9ff)}
+  .labstar-shield-icon{font-size:28px;margin-bottom:8px}.labstar-shield-name{font-weight:900;color:#fff}.labstar-shield-desc{font-size:12px;color:#bfdbfe;margin-top:5px;line-height:1.35}
+  .labstar-qr-wrap{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}.labstar-qr-box{background:white;border-radius:18px;padding:10px;display:grid;place-items:center}.labstar-qr-box img{width:128px;height:128px;display:block}.labstar-qr-config{display:flex;gap:8px;margin-top:10px}.labstar-qr-config input{width:100%;border-radius:12px;border:1px solid rgba(103,232,249,.22);padding:10px;font-family:Poppins,sans-serif}.labstar-qr-config button{border:none;border-radius:12px;padding:10px 12px;font-weight:900;background:linear-gradient(45deg,#1d4ed8,#00d9ff);color:white;cursor:pointer}
+  .labstar-carousel-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.labstar-carousel-controls button{border:1px solid rgba(103,232,249,.22);background:rgba(255,255,255,.08);color:#e0f2fe;border-radius:999px;padding:9px 14px;font-weight:900;cursor:pointer}.labstar-carousel-controls button.active{background:linear-gradient(45deg,#1d4ed8,#00d9ff);border-color:transparent}
+  .labstar-focus{outline:3px solid rgba(0,217,255,.55)!important;box-shadow:0 0 0 8px rgba(0,217,255,.10),0 0 50px rgba(0,217,255,.25)!important;transition:.45s}
+  .labstar-champion-overlay{position:fixed;inset:0;background:radial-gradient(circle at center,rgba(0,217,255,.24),transparent 32%),linear-gradient(135deg,rgba(2,8,23,.96),rgba(8,47,110,.94));z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;color:white;text-align:center}.labstar-champion-overlay.active{display:flex;animation:champIn .45s ease}.labstar-champion-card{max-width:900px;width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);backdrop-filter:blur(18px);border-radius:38px;padding:38px;box-shadow:0 40px 140px rgba(0,0,0,.48);position:relative;overflow:hidden}.labstar-champion-card:before{content:'CYBER CHAMPION';position:absolute;left:50%;top:-20px;transform:translateX(-50%);font-size:82px;font-weight:900;white-space:nowrap;color:rgba(255,255,255,.05)}.labstar-champion-kicker{font-size:18px;font-weight:900;color:#a5f3fc}.labstar-champion-trophy{font-size:86px;filter:drop-shadow(0 0 28px rgba(245,158,11,.55));margin:14px 0}.labstar-champion-name{font-size:48px;font-weight:900;line-height:1.05}.labstar-champion-meta{margin-top:16px;font-size:20px;color:#e0f2fe;font-weight:800}.labstar-champion-msg{margin-top:18px;color:#bfdbfe;font-weight:700}.labstar-close-champion{margin-top:26px;border:none;border-radius:999px;padding:13px 24px;background:linear-gradient(45deg,#1d4ed8,#00d9ff);color:white;font-weight:900;cursor:pointer}
+  @keyframes champIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}
+  @media(max-width:900px){.labstar-blindagem-grid{grid-template-columns:1fr 1fr}.labstar-qr-wrap{grid-template-columns:1fr}.labstar-qr-box{width:max-content}.labstar-champion-name{font-size:32px}.labstar-champion-card{padding:24px;border-radius:28px}.labstar-champion-card:before{font-size:42px}.labstar-champion-trophy{font-size:64px}}
+  @media(max-width:520px){.labstar-blindagem-grid{grid-template-columns:1fr}.labstar-qr-config{display:grid}.labstar-champion-name{font-size:26px}.labstar-champion-meta{font-size:15px}.labstar-champion-msg{font-size:13px}}
+</style>
+<script>
+(function(){
+  const DEFAULT_QR = localStorage.getItem('labstar_qr_link') || 'https://wa.me/5500000000000?text=Ol%C3%A1%20Labstar%2C%20vim%20pela%20Expoleme%20e%20quero%20saber%20mais%20sobre%20CyberSecurity';
+  let carouselOn = true;
+  let carouselIndex = 0;
+  let championShown = false;
+
+  function $(id){ return document.getElementById(id); }
+  function panel(){ return $('adminPanel'); }
+  function isAdminVisible(){ return panel() && !panel().classList.contains('hidden') && $('admin')?.classList.contains('active'); }
+
+  function injectExtras(){
+    const adminPanel = panel();
+    if(!adminPanel || $('labstarExtraRoot')) return;
+
+    const root = document.createElement('div');
+    root.id = 'labstarExtraRoot';
+    root.style.display = 'grid';
+    root.style.gap = '18px';
+
+    root.innerHTML = `
+      <div class="labstar-carousel-controls">
+        <button id="labstarCarouselBtn" class="active" type="button">🎬 Carrossel TV ativo</button>
+        <button id="labstarChampionBtn" type="button">🏆 Mostrar campeão</button>
+      </div>
+
+      <div class="labstar-extra-panel" id="labstarBlindagemPanel">
+        <div class="labstar-extra-title">🛡️ Blindagem Labstar</div>
+        <div class="labstar-blindagem-grid">
+          <div class="labstar-shield-card"><div class="labstar-shield-icon">🔥</div><div class="labstar-shield-name">Firewall</div><div class="labstar-shield-desc">Proteção de borda, controle de acesso e defesa contra tráfego suspeito.</div></div>
+          <div class="labstar-shield-card"><div class="labstar-shield-icon">☁️</div><div class="labstar-shield-name">Cloud Backup</div><div class="labstar-shield-desc">Cópias seguras para continuidade e recuperação em incidentes.</div></div>
+          <div class="labstar-shield-card"><div class="labstar-shield-icon">📡</div><div class="labstar-shield-name">Monitoramento</div><div class="labstar-shield-desc">Visibilidade de ambiente, alertas e acompanhamento técnico.</div></div>
+          <div class="labstar-shield-card"><div class="labstar-shield-icon">🧑‍💻</div><div class="labstar-shield-name">Suporte</div><div class="labstar-shield-desc">Atendimento especializado para manter a tecnologia funcionando.</div></div>
+        </div>
+      </div>
+
+      <div class="labstar-extra-panel" id="labstarQrPanel">
+        <div class="labstar-extra-title">📲 Checklist / Contato Labstar</div>
+        <div class="labstar-qr-wrap">
+          <div class="labstar-qr-box"><img id="labstarQrImg" alt="QR Code Labstar"></div>
+          <div>
+            <div style="font-weight:900;font-size:20px;color:#fff">Aponte a câmera e fale com a Labstar</div>
+            <div style="color:#bfdbfe;margin-top:6px;font-weight:700">Use para WhatsApp, checklist de senhas, formulário ou página de contato.</div>
+            <div class="labstar-qr-config">
+              <input id="labstarQrInput" placeholder="Cole aqui o link do WhatsApp, site ou checklist">
+              <button id="labstarQrSave" type="button">Salvar QR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const arenaGrid = adminPanel.querySelector('.arena-grid');
+    if(arenaGrid) adminPanel.insertBefore(root, arenaGrid);
+    else adminPanel.appendChild(root);
+
+    if(!$('labstarChampionOverlay')){
+      const overlay = document.createElement('div');
+      overlay.id = 'labstarChampionOverlay';
+      overlay.className = 'labstar-champion-overlay';
+      overlay.innerHTML = `
+        <div class="labstar-champion-card">
+          <div class="labstar-champion-kicker">LABSTAR TECNOLOGIA - CYBERSECURITY</div>
+          <div class="labstar-champion-trophy">🏆</div>
+          <div class="labstar-champion-name" id="labstarChampionName">Cyber Champion</div>
+          <div class="labstar-champion-meta" id="labstarChampionMeta">Senha mais resistente da arena</div>
+          <div class="labstar-champion-msg">O verdadeiro campeão é quem aprendeu: senha forte não usa dados pessoais.</div>
+          <button class="labstar-close-champion" id="labstarCloseChampion" type="button">Fechar</button>
+        </div>`;
+      document.body.appendChild(overlay);
+      $('labstarCloseChampion').onclick = () => overlay.classList.remove('active');
+    }
+
+    $('labstarCarouselBtn').onclick = () => {
+      carouselOn = !carouselOn;
+      $('labstarCarouselBtn').classList.toggle('active', carouselOn);
+      $('labstarCarouselBtn').textContent = carouselOn ? '🎬 Carrossel TV ativo' : '🎬 Carrossel TV pausado';
+    };
+    $('labstarChampionBtn').onclick = showChampion;
+    $('labstarQrSave').onclick = () => {
+      const link = $('labstarQrInput').value.trim();
+      if(!link) return;
+      localStorage.setItem('labstar_qr_link', link);
+      updateQr();
+    };
+    $('labstarQrInput').value = localStorage.getItem('labstar_qr_link') || DEFAULT_QR;
+    updateQr();
+  }
+
+  function updateQr(){
+    const link = localStorage.getItem('labstar_qr_link') || $('labstarQrInput')?.value || DEFAULT_QR;
+    if($('labstarQrImg')) $('labstarQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(link);
+    if($('labstarQrInput')) $('labstarQrInput').value = link;
+  }
+
+  function getChampionFromDom(){
+    const row = document.querySelector('#listaRankingAdmin tr');
+    if(!row) return null;
+    const name = row.querySelector('.name-btn')?.textContent?.trim() || row.children?.[1]?.textContent?.trim() || 'Cyber Champion';
+    const force = row.children?.[2]?.textContent?.trim() || '';
+    const time = row.children?.[3]?.textContent?.trim() || '';
+    return {name, force, time};
+  }
+
+  function showChampion(){
+    const champ = getChampionFromDom();
+    if(!champ) return;
+    $('labstarChampionName').textContent = champ.name;
+    $('labstarChampionMeta').textContent = `Tempo: ${champ.time || '—'} • Força: ${champ.force || '—'}`;
+    $('labstarChampionOverlay').classList.add('active');
+    confettiBurst();
+  }
+
+  function maybeAutoChampion(){
+    const countdownText = $('rankingCountdown')?.textContent || '';
+    const bannerVisible = $('winnerBanner') && !$('winnerBanner').classList.contains('hidden');
+    if(!championShown && (countdownText.includes('ENCERRADO') || bannerVisible)){
+      championShown = true;
+      setTimeout(showChampion, 900);
+    }
+  }
+
+  function carouselStep(){
+    if(!carouselOn || !isAdminVisible()) return;
+    const sections = [document.querySelector('.hero'), document.querySelector('.metrics'), $('labstarBlindagemPanel'), $('labstarQrPanel'), document.querySelector('.podium'), document.querySelector('.admin-card'), document.querySelector('.radar-card')].filter(Boolean);
+    if(!sections.length) return;
+    sections.forEach(s => s.classList.remove('labstar-focus'));
+    const target = sections[carouselIndex % sections.length];
+    carouselIndex++;
+    target.classList.add('labstar-focus');
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function confettiBurst(){
+    for(let i=0;i<70;i++){
+      const e=document.createElement('div');
+      e.className='confetti';
+      e.style.left=Math.random()*100+'vw';
+      e.style.background=['#00d9ff','#1d4ed8','#f59e0b','#10b981','#fff'][Math.floor(Math.random()*5)];
+      e.style.animationDelay=Math.random()*.5+'s';
+      document.body.appendChild(e);
+      setTimeout(()=>e.remove(),2400);
+    }
+  }
+
+  setInterval(injectExtras, 1000);
+  setInterval(carouselStep, 18000);
+  setInterval(maybeAutoChampion, 1000);
+})();
+</script>
